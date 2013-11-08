@@ -15,7 +15,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="80dp"
         android:drawableRight="@drawable/ic_action_search"
-        android:text="@string/home_search_button" />
+        android:text="@string/home_search_button" 
+        android:onClick="startSearch" />
     
 	<Button
         android:id="@+id/home_camera_button"
@@ -25,7 +26,7 @@
         android:layout_marginTop="175dp"
         android:drawableRight="@drawable/ic_action_camera"
         android:text="@string/home_camera_button"
-        android:onClick="openCamera" />
+        android:onClick="startCamera" />
 	
 	<Button
         android:id="@+id/home_camera_button_api"
@@ -34,6 +35,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="270dp"
         android:drawableRight="@drawable/ic_action_camera"
-        android:text="@string/home_camera_button_api" />
+        android:text="@string/home_camera_button_api" 
+        android:onClick="startCameraAPI" />
 
 </RelativeLayout>
