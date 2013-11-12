@@ -1,6 +1,7 @@
 package com.prer;
 
 import java.io.IOException;
+import java.util.List;
 
 import android.content.Context;
 import android.hardware.Camera;
@@ -80,6 +81,13 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         
         // rotate the .JPG image so it's oriented correctly when viewed in photo viewer
         cParams.setRotation(90);
+        
+        // set camera preview to auto focus if available
+        List<String> focusModes = cParams.getSupportedFocusModes();
+        if (focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+          // auto focus mode is supported
+        	cParams.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        }
         
         // update the camera object parameters
         mCamera.setParameters(cParams);
