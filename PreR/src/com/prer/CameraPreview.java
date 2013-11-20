@@ -73,13 +73,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         // rotate camera 90 degrees to portrait
         mCamera.setDisplayOrientation(90);
-
-        // set preview and layout view to size of the camera
-        // orientation is set to portrait, therefore height and width are switched
-        Camera.Size size = cParams.getPreviewSize();
-        cParams.setPreviewSize(size.height, size.width);
-        
-        // rotate the .JPG image so it's oriented correctly when viewed in photo viewer
+        // rotate the image file so it's oriented correctly (portrait) when viewed in photo viewer
         cParams.setRotation(90);
         
         // set camera preview to auto focus if available
@@ -91,9 +85,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         
         // update the camera object parameters
         mCamera.setParameters(cParams);
-        
-        // had problems with preview size, LEAVE COMMENTED
-//        this.setLayoutParams(new FrameLayout.LayoutParams(size.height, size.width));
 
         // start preview with new settings
         try {
