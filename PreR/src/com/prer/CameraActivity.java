@@ -5,40 +5,60 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Window;
 
 /** The activity that will display the camera preview. */
-public class CameraActivity extends Activity {
+public class CameraActivity extends SherlockActivity {
 
-    protected static final String TAG = "CameraActivity";
+    private static final String TAG = "CameraActivity";
 	private Camera mCamera;
     private CameraPreview mPreview;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.camera_layout);
         
-        Log.d(TAG, "created");
+        // hide the status and action bars before setContentView()
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+        						WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        setContentView(R.layout.camera_layout);
         
         // create the Camera and CameraPreview objects
         createCamera();
+        
+        Log.d(TAG, "camera instance has been created.");
     }
     
     private void createCamera() {
     	// create an instance of Camera
         mCamera = getCameraInstance();
+        
+        // get the default preview size for the camera
+        Camera.Parameters params = mCamera.getParameters();
+        Camera.Size previewSize = params.getPreviewSize();
+        
+        // set layout parameters to the width and height of camera preview
+        // width and height are switched for portrait mode
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+        									previewSize.height, previewSize.width);
+        
         // create our Preview view and set it as the content of our activity
         mPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        // applying layout parameters to the camera preview layout
+        preview.setLayoutParams(lp);
         preview.addView(mPreview);
     }
     
@@ -46,10 +66,10 @@ public class CameraActivity extends Activity {
     protected void onPause() {
         super.onPause();
         
-        Log.d(TAG, "paused, camera will be released.");
-        
         // release the camera immediately on pause event
         releaseCamera();
+        
+        Log.d(TAG, "camera preview paused, camera has been released.");
     }
     
     /** A safe way to get an instance of the Camera object. */
@@ -57,13 +77,15 @@ public class CameraActivity extends Activity {
         Camera c = null;
         
         try {
-            c = Camera.open();	// attempt to get a Camera instance
+        	// attempt to get a Camera instance
+            c = Camera.open();
         }
         catch (Exception e){
             // camera is not available (in use or does not exist)
         }
         
-        return c; // returns null if camera is unavailable
+        // returns null if camera is unavailable
+        return c;
     }
     
     /** Listener method for the capture button. */
@@ -78,34 +100,27 @@ public class CameraActivity extends Activity {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
         	
-        	// create intent to start to ReviewBillActivity
-//        	Intent intent = new Intent(getApplicationContext(), ReviewBillActivity.class);
-        	
-        	// create a file for
+        	// create a file for the image to be saved as
             File pictureFile = MediaFileHelper.getOutputMediaFile(
             		  			MediaFileHelper.MEDIA_TYPE_IMAGE);
-            // add the file image to the intent to send to ReviewBillActivity
-//            intent.putExtra(MediaStore.EXTRA_OUTPUT, pictureFile);
             
             // code that saves the image to the SD card
-            if (pictureFile == null){
+            if (pictureFile == null) {
                 Log.d(TAG, "Error creating media file, check storage permissions: ");
                 return;
             }
-
             try {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 fos.write(data);
                 fos.close();
-            } catch (FileNotFoundException e) {
+            }
+            catch (FileNotFoundException e) {
                 Log.d(TAG, "File not found: " + e.getMessage());
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Log.d(TAG, "Error accessing file: " + e.getMessage());
             }
             // end of code that saves the image to the SD card
-            
-            // start the ReviewBillActivity
-//            startActivity(intent);
             
             // restart the preview to get live feed from camera
             mCamera.startPreview();

@@ -6,9 +6,9 @@
     <string name="home_search_button">Search Procedure Cost</string>
     <string name="home_camera_button">Camera Intent</string>
 	<string name="home_camera_button_api">Camera API</string>
-	<string name="image_button_description">Image button for taking a picture.</string>
+	<string name="capture_button_description">Take Picture</string>
 	<string name="upload_bill_title">Capture Bill</string>
-	<string name="review_bill_image">View to display bill image.</string>
-	<string name="review_bill_title">Review Bill Image</string>
+	<string name="prer_logo_description">PreR Logo</string>
+	<string name="prer_motto_message">Making Health Care Healthier</string>
     
 </resources>
