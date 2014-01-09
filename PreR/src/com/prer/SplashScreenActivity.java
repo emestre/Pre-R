@@ -22,7 +22,7 @@ public class SplashScreenActivity extends SherlockActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
         						WindowManager.LayoutParams.FLAG_FULLSCREEN);
         
-        setContentView(R.layout.splashscreen_layout);
+        setContentView(R.layout.layout_splashscreen);
 
         // New Handler to start the HomeScreenActivity 
         // and close the splash screen after some seconds

@@ -33,7 +33,7 @@ public class CameraActivity extends SherlockActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
         						WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.camera_layout);
+        setContentView(R.layout.layout_camera);
         
         // create the Camera and CameraPreview objects
         createCamera();

@@ -910,13 +910,10 @@ containing a value of this type.
         public static final int abs__textfield_searchview_right_holo_dark=0x7f02006d;
         public static final int abs__textfield_searchview_right_holo_light=0x7f02006e;
         public static final int abs__toast_frame=0x7f02006f;
-        public static final int capture_button=0x7f020070;
-        public static final int capture_button_normal=0x7f020071;
-        public static final int capture_button_pressed=0x7f020072;
-        public static final int ic_action_camera=0x7f020073;
-        public static final int ic_action_search=0x7f020074;
-        public static final int ic_launcher=0x7f020075;
-        public static final int prer_logo=0x7f020076;
+        public static final int ic_action_camera=0x7f020070;
+        public static final int ic_action_search=0x7f020071;
+        public static final int ic_launcher=0x7f020072;
+        public static final int prer_logo=0x7f020073;
     }
     public static final class id {
         public static final int abs__action_bar=0x7f040020;
@@ -1001,14 +998,14 @@ containing a value of this type.
         public static final int abs__search_dropdown_item_icons_2line=0x7f030012;
         public static final int abs__search_view=0x7f030013;
         public static final int abs__simple_dropdown_hint=0x7f030014;
-        public static final int camera_layout=0x7f030015;
-        public static final int homescreen_layout=0x7f030016;
-        public static final int sherlock_spinner_dropdown_item=0x7f030017;
-        public static final int sherlock_spinner_item=0x7f030018;
-        public static final int splashscreen_layout=0x7f030019;
+        public static final int layout_camera=0x7f030015;
+        public static final int layout_homescreen=0x7f030016;
+        public static final int layout_splashscreen=0x7f030017;
+        public static final int sherlock_spinner_dropdown_item=0x7f030018;
+        public static final int sherlock_spinner_item=0x7f030019;
     }
     public static final class menu {
-        public static final int home_screen=0x7f0b0000;
+        public static final int menu_homescreen=0x7f0b0000;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
@@ -1052,13 +1049,13 @@ containing a value of this type.
         public static final int abs__shareactionprovider_share_with_application=0x7f090007;
         public static final int action_settings=0x7f09000e;
         public static final int app_name=0x7f09000d;
-        public static final int capture_button_description=0x7f090012;
+        public static final int capture_button=0x7f090015;
         public static final int home_camera_button=0x7f090010;
         public static final int home_camera_button_api=0x7f090011;
         public static final int home_search_button=0x7f09000f;
-        public static final int prer_logo_description=0x7f090014;
-        public static final int prer_motto_message=0x7f090015;
-        public static final int upload_bill_title=0x7f090013;
+        public static final int prer_logo_description=0x7f090013;
+        public static final int prer_motto_message=0x7f090014;
+        public static final int upload_bill_title=0x7f090012;
     }
     public static final class style {
         /** 

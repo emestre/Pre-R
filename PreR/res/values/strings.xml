@@ -6,9 +6,9 @@
     <string name="home_search_button">Search Procedure Cost</string>
     <string name="home_camera_button">Camera Intent</string>
 	<string name="home_camera_button_api">Camera API</string>
-	<string name="capture_button_description">Take Picture</string>
 	<string name="upload_bill_title">Capture Bill</string>
 	<string name="prer_logo_description">PreR Logo</string>
 	<string name="prer_motto_message">Making Health Care Healthier</string>
+	<string name="capture_button">Capture</string>
     
 </resources>
