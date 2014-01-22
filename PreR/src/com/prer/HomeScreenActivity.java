@@ -39,7 +39,8 @@ public class HomeScreenActivity extends Activity {
     
     /** TODO: Start the search activity. */
     public void startSearch(View view) {
-    	
+    	Intent intent = new Intent(this, SearchActivity.class);
+		startActivity(intent);
     }
     
     /** Start the custom camera activity. */
