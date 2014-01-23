@@ -66,5 +66,7 @@
     <string name="title_activity_procedure_results_list">ProcedureResultsList</string>
     <string name="sort_price">Sort by price</string>
     <string name="sort_distance">Sort by distance</string>
+    <string name="title_activity_procedure_information">ProcedureInformation</string>
+    <string name="hospital_info">\n123 Fake St.\nSan Luis Obispo</string>
 
 </resources>

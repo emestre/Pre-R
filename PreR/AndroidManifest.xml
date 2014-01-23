@@ -49,6 +49,10 @@
             android:name="com.prer.ProcedureResultsList"
             android:label="@string/title_activity_procedure_results_list" >
         </activity>
+        <activity
+            android:name="com.prer.ProcedureInformation"
+            android:label="@string/title_activity_procedure_information" >
+        </activity>
     </application>
 
 </manifest>

@@ -18,10 +18,16 @@ import com.google.gson.stream.JsonToken;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class ProcedureResultsList extends Activity {
 
@@ -34,6 +40,8 @@ public class ProcedureResultsList extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		final Context context= getApplicationContext();
+
 		procedureName = getIntent().getExtras().getString("PROCEDURE");
 		procedureZip = getIntent().getExtras().getString("ZIPCODE");
 		filteredProcedures = new ArrayList<Procedure>();
@@ -42,6 +50,23 @@ public class ProcedureResultsList extends Activity {
 		setContentView(R.layout.activity_procedure_results_list);
 		procedureListView = (ListView) findViewById(R.id.procedure_listView);
 		procedureListView.setAdapter(adapter);
+		
+		procedureListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				Intent intent = new Intent(context, ProcedureInformation.class);
+				intent.putExtra("PROCEDURE", ((TextView) arg1
+						.findViewById(R.id.name_textView)).getText().toString());
+				intent.putExtra("PRICE",  ((TextView) arg1
+						.findViewById(R.id.price_textView)).getText().toString());
+				intent.putExtra("HOSPITAL",  ((TextView) arg1
+						.findViewById(R.id.hospital_textView)).getText().toString());
+				startActivity(intent);
+			}
+
+		});
 	}
 
 	private void getData() {
