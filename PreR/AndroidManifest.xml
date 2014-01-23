@@ -45,6 +45,10 @@
             android:name="com.prer.SearchActivity"
             android:label="@string/title_activity_search" >
         </activity>
+        <activity
+            android:name="com.prer.ProcedureResultsList"
+            android:label="@string/title_activity_procedure_results_list" >
+        </activity>
     </application>
 
 </manifest>

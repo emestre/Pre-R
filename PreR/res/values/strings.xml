@@ -15,6 +15,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="zipcode_edittext_hint">Near: Zip Code</string>
     <string name="search_button_text">Search</string>
+
     <string-array name="procedure_list">
         <item>Ankle X-Ray</item>
         <item>Ankle X-Ray</item>
@@ -36,30 +37,34 @@
         <item>Shoulder Cast</item>
         <item>Shoulder Surgery</item>
         <item>Shoulder Surgery</item>
-    </string-array>    
-    <string-array name="zipcode_list">
-		<item>93405</item>
-		<item>93401</item>	
-		<item>93405</item>
-		<item>93405</item>
-		<item>93405</item>
-		<item>93401</item>
-		<item>93405</item>
-		<item>93405</item>
-		<item>93405</item>
-		<item>93401</item>
-		<item>93405</item>
-		<item>93401</item>
-		<item>93405</item>
-		<item>93405</item>
-		<item>93405</item>
-		<item>93401</item>
-		<item>93405</item>
-		<item>93405</item>
-		<item>93405</item>
-		<item>93401</item>
     </string-array>
+    <string-array name="zipcode_list">
+        <item>93405</item>
+        <item>93401</item>
+        <item>93405</item>
+        <item>93405</item>
+        <item>93405</item>
+        <item>93401</item>
+        <item>93405</item>
+        <item>93405</item>
+        <item>93405</item>
+        <item>93401</item>
+        <item>93405</item>
+        <item>93401</item>
+        <item>93405</item>
+        <item>93405</item>
+        <item>93405</item>
+        <item>93401</item>
+        <item>93405</item>
+        <item>93405</item>
+        <item>93405</item>
+        <item>93401</item>
+    </string-array>
+
     <string name="incorrect_zip">Please enter a valid zip code</string>
     <string name="no_results">No Results Found</string>
+    <string name="title_activity_procedure_results_list">ProcedureResultsList</string>
+    <string name="sort_price">Sort by price</string>
+    <string name="sort_distance">Sort by distance</string>
 
 </resources>
