@@ -1,0 +1,33 @@
+{
+   "procedures":
+   [
+      {
+         "name":"Ankle X-Ray",
+         "price":"$451.05",
+         "distance":"3.0 miles",
+         "hospital":"Sierra Vista Hospital",
+         "zipcode":"93405"
+      },
+      {
+         "name":"Ankle X-Ray",
+         "price":"$493.01",
+         "distance":"2.1 miles",
+         "hospital":"Urgent Care",
+         "zipcode":"93405"
+      },
+      {
+         "name":"Ankle X-Ray",
+         "price":"$426.61",
+         "distance":"4.9 miles",
+         "hospital":"French Hospital",
+         "zipcode":"93401"
+      },
+      {
+         "name":"Ankle X-Ray",
+         "price":"$452.34",
+         "distance":"2.4 miles",
+         "hospital":"Med Stop",
+         "zipcode":"93401"
+      }
+   ] 
+}
