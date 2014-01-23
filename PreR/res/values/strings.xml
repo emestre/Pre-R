@@ -5,10 +5,63 @@
     <string name="action_settings">Settings</string>
     <string name="home_search_button">Search Procedure Cost</string>
     <string name="home_camera_button">Camera Intent</string>
-	<string name="home_camera_button_api">Camera API</string>
-	<string name="upload_bill_title">Capture Bill</string>
-	<string name="prer_logo_description">PreR Logo</string>
-	<string name="prer_motto_message">Making Health Care Healthier</string>
-	<string name="capture_button">Capture</string>
-    
+    <string name="home_camera_button_api">Camera API</string>
+    <string name="image_button_description">Image button for taking a picture.</string>
+    <string name="upload_bill_title">Capture Bill</string>
+    <string name="review_bill_image">View to display bill image.</string>
+    <string name="review_bill_title">Review Bill Image</string>
+    <string name="search_edittext_hint">Procedure Name / CPT Code</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="zipcode_edittext_hint">Near: Zip Code</string>
+    <string name="search_button_text">Search</string>
+    <string-array name="procedure_list">
+        <item>Ankle X-Ray</item>
+        <item>Ankle X-Ray</item>
+        <item>Ankle Brace</item>
+        <item>Ankle Cast</item>
+        <item>Ankle Surgery</item>
+        <item>Ankle Surgery</item>
+        <item>Ankle Splint</item>
+        <item>Wrist X-Ray</item>
+        <item>Wrist Brace</item>
+        <item>Wrist Brace</item>
+        <item>Wrist Cast</item>
+        <item>Wrist Cast</item>
+        <item>Wrist Surgery</item>
+        <item>Wrist Splint</item>
+        <item>Shoulder X-Ray</item>
+        <item>Shoulder X-Ray</item>
+        <item>Shoulder Brace</item>
+        <item>Shoulder Cast</item>
+        <item>Shoulder Surgery</item>
+        <item>Shoulder Surgery</item>
+    </string-array>    
+    <string-array name="zipcode_list">
+		<item>93405</item>
+		<item>93401</item>	
+		<item>93405</item>
+		<item>93405</item>
+		<item>93405</item>
+		<item>93401</item>
+		<item>93405</item>
+		<item>93405</item>
+		<item>93405</item>
+		<item>93401</item>
+		<item>93405</item>
+		<item>93401</item>
+		<item>93405</item>
+		<item>93405</item>
+		<item>93405</item>
+		<item>93401</item>
+		<item>93405</item>
+		<item>93405</item>
+		<item>93405</item>
+		<item>93401</item>
+    </string-array>
+    <string name="incorrect_zip">Please enter a valid zip code</string>
+    <string name="no_results">No Results Found</string>
+    <string name="capture_button">Capture</string>
+    <string name="splash_image_description">The PreR brand logo.</string>
+
 </resources>

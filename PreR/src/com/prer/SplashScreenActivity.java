@@ -1,14 +1,13 @@
 package com.prer;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Window;
 import android.view.WindowManager;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Window;
-
-public class SplashScreenActivity extends SherlockActivity {
+public class SplashScreenActivity extends Activity {
 	
     private final int SPLASH_DISPLAY_TIME = 1500;
 

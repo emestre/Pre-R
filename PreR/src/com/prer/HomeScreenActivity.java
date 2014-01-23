@@ -9,8 +9,7 @@
 
 package com.prer;
 
-import com.actionbarsherlock.app.SherlockActivity;
-
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,7 +18,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 
-public class HomeScreenActivity extends SherlockActivity {
+public class HomeScreenActivity extends Activity {
 
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 	private Uri fileUri;
@@ -37,9 +36,10 @@ public class HomeScreenActivity extends SherlockActivity {
 //        return true;
 //    }
     
-    /** TODO: Start the search activity. */
+    /** Start the search activity. */
     public void startSearch(View view) {
-    	
+    	Intent intent = new Intent(this, SearchActivity.class);
+		startActivity(intent);
     }
     
     /** Start the custom camera activity. */
