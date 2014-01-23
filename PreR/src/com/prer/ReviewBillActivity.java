@@ -1,29 +1,47 @@
 package com.prer;
 
-import java.io.File;
-
 import android.app.Activity;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 
 public class ReviewBillActivity extends Activity {
 	
-    @Override
+	protected ImageView mCapturedBill;
+	
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.review_bill_layout);
+        setContentView(R.layout.layout_review_bill);
         displayImage();
     }
     
     private void displayImage() {
-    	File pic = (File) getIntent().getExtras().get(MediaStore.EXTRA_OUTPUT);
     	
-		// create ImageView
-		ImageView image = (ImageView)findViewById(R.id.review_bill);
-		image.setImageURI(Uri.fromFile(pic));
-		image.setVisibility(View.VISIBLE);
+    	// retrieve the file path from the intent
+    	String path = (String) getIntent().getExtras().get("path");
+    	// create a bitmap image from the file path
+    	Bitmap billImage = BitmapFactory.decodeFile(path);
+    	Matrix rotateMatrix = new Matrix();
+    	rotateMatrix.postRotate(90);
+    	Bitmap rotatedImage = Bitmap.createBitmap(billImage, 0, 0, billImage.getWidth(), 
+    						billImage.getHeight(), rotateMatrix, false);
+    	
+        // create ImageView
+        this.mCapturedBill = (ImageView) findViewById(R.id.review_bill);
+        this.mCapturedBill.setImageBitmap(rotatedImage);
+        this.mCapturedBill.setVisibility(View.VISIBLE);
+    }
+    
+    public void retakePictureClick(View view) {
+    	// kill the ReviewBillActivity, simulating a back button press
+    	this.finish();
+    }
+    
+    public void uploadBillClick(View view) {
+    	
     }
 }

@@ -21,38 +21,50 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
+        <activity
+            android:name="com.prer.SplashScreenActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            
+        </activity>
+        
         <activity
             android:name="com.prer.HomeScreenActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+        
         <activity
             android:name="com.prer.CameraActivity"
-            android:label="@string/upload_bill_title"
+            android:label="@string/capture_bill_title"
             android:screenOrientation="portrait" >
         </activity>
+        
         <activity
             android:name="com.prer.ReviewBillActivity"
             android:label="@string/review_bill_title"
             android:screenOrientation="portrait" >
         </activity>
+        
         <activity
             android:name="com.prer.SearchActivity"
             android:label="@string/title_activity_search" >
         </activity>
+        
         <activity
             android:name="com.prer.ProcedureResultsList"
             android:label="@string/title_activity_procedure_results_list" >
         </activity>
+        
         <activity
             android:name="com.prer.ProcedureInformation"
             android:label="@string/title_activity_procedure_information" >
         </activity>
+        
     </application>
 
 </manifest>

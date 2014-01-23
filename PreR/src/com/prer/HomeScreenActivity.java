@@ -27,17 +27,17 @@ public class HomeScreenActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.homescreen_layout);
+        setContentView(R.layout.layout_homescreen);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home_screen, menu);
+        getMenuInflater().inflate(R.menu.menu_homescreen, menu);
         return true;
     }
     
-    /** TODO: Start the search activity. */
+    /** Start the search activity. */
     public void startSearch(View view) {
     	Intent intent = new Intent(this, SearchActivity.class);
 		startActivity(intent);

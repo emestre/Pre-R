@@ -15,7 +15,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private static final String TAG = "CameraPreview";
 	private SurfaceHolder mHolder;
     private Camera mCamera;
-    private Camera.Parameters cParams;
+    private Camera.Parameters mParams;
 
     /** A standard default constructor, provided to suppress warning. */
     public CameraPreview(Context context) {
@@ -27,12 +27,13 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         super(context);
         
         mCamera = camera;
-        cParams = mCamera.getParameters();
+        mParams = mCamera.getParameters();
 
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
         mHolder = getHolder();
         mHolder.addCallback(this);
+        
         // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
@@ -73,27 +74,31 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         // rotate camera 90 degrees to portrait
         mCamera.setDisplayOrientation(90);
-
-        // set preview and layout view to size of the camera
-        // orientation is set to portrait, therefore height and width are switched
-        Camera.Size size = cParams.getPreviewSize();
-        cParams.setPreviewSize(size.height, size.width);
-        
-        // rotate the .JPG image so it's oriented correctly when viewed in photo viewer
-        cParams.setRotation(90);
+        // rotate the image file so it's oriented correctly (portrait) when viewed in photo viewer
+        mParams.setRotation(0);
         
         // set camera preview to auto focus if available
-        List<String> focusModes = cParams.getSupportedFocusModes();
+        List<String> focusModes = mParams.getSupportedFocusModes();
         if (focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
           // auto focus mode is supported
-        	cParams.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        	mParams.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         }
         
-        // update the camera object parameters
-        mCamera.setParameters(cParams);
         
-        // had problems with preview size, LEAVE COMMENTED
-//        this.setLayoutParams(new FrameLayout.LayoutParams(size.height, size.width));
+        
+//        List<Camera.Size> previewSizes = mParams.getSupportedPreviewSizes();
+//        for (Camera.Size s : previewSizes) {
+//        	Log.d(TAG, "height: " + s.height + " width: " + s.width);
+//        }
+//        Camera.Size realSize = mParams.getPreviewSize();
+//        Log.d(TAG, "using preview size - height: " + realSize.height + " width: " + realSize.width);
+//        realSize = mParams.getPictureSize();
+//        Log.d(TAG, "using picture size - height: " + realSize.height + " width: " + realSize.width);
+        
+        
+        
+        // update the camera object parameters
+        mCamera.setParameters(mParams);
 
         // start preview with new settings
         try {
