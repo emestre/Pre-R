@@ -75,7 +75,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // rotate camera 90 degrees to portrait
         mCamera.setDisplayOrientation(90);
         // rotate the image file so it's oriented correctly (portrait) when viewed in photo viewer
-        mParams.setRotation(90);
+        mParams.setRotation(0);
         
         // set camera preview to auto focus if available
         List<String> focusModes = mParams.getSupportedFocusModes();

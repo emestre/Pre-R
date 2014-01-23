@@ -40,7 +40,13 @@
         
         <activity
             android:name="com.prer.CameraActivity"
-            android:label="@string/upload_bill_title"
+            android:label="@string/capture_bill_title"
+            android:screenOrientation="portrait" >
+        </activity>
+        
+        <activity
+            android:name="com.prer.ReviewBillActivity"
+            android:label="@string/review_bill_title"
             android:screenOrientation="portrait" >
         </activity>
         

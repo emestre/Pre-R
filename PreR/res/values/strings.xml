@@ -7,9 +7,9 @@
     <string name="home_camera_button">Camera Intent</string>
     <string name="home_camera_button_api">Camera API</string>
     <string name="image_button_description">Image button for taking a picture.</string>
-    <string name="upload_bill_title">Capture Bill</string>
+    <string name="capture_bill_title">Capture Bill</string>
     <string name="review_bill_image">View to display bill image.</string>
-    <string name="review_bill_title">Review Bill Image</string>
+    <string name="review_bill_title">Review Bill</string>
     <string name="search_edittext_hint">Procedure Name / CPT Code</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="hello_world">Hello world!</string>
@@ -70,5 +70,7 @@
     <string name="sort_distance">Sort by distance</string>
     <string name="title_activity_procedure_information">ProcedureInformation</string>
     <string name="hospital_info">\n123 Fake St.\nSan Luis Obispo</string>
+    <string name="upload_bill_button">Upload</string>
+    <string name="retake_picture_button">Retake</string>
 
 </resources>
