@@ -21,6 +21,7 @@ import android.widget.Toast;
 //TODO Add CPT Code functionality
 //TODO Write a bunch of test cases
 //TODO Link results to the hospital view
+
 public class SearchActivity extends Activity {
 
 	protected ArrayAdapter<String> resultsAdapter; // List adapter to display after search

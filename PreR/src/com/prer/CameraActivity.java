@@ -27,11 +27,12 @@ public class CameraActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        // hide the status and action bars before setContentView()
+        // hide the status bar and action bar before setContentView(), fullscreen mode for camera
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
         						WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        // link this activity to the corresponding XML file
         setContentView(R.layout.layout_camera);
         
         // create the Camera and CameraPreview objects

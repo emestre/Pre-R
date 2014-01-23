@@ -16,6 +16,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Menu;
 import android.view.View;
 
 public class HomeScreenActivity extends Activity {
@@ -29,12 +30,12 @@ public class HomeScreenActivity extends Activity {
         setContentView(R.layout.layout_homescreen);
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.home_screen, menu);
-//        return true;
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_homescreen, menu);
+        return true;
+    }
     
     /** Start the search activity. */
     public void startSearch(View view) {
