@@ -48,17 +48,11 @@ public class ProcedureResultsList extends Activity {
 
 		String json = null;
 		try {
-
 			InputStream is = getAssets().open(procedureName + ".json");
-
 			int size = is.available();
-
 			byte[] buffer = new byte[size];
-
 			is.read(buffer);
-
 			is.close();
-
 			json = new String(buffer, "UTF-8");
 
 			Gson gson = new Gson();
