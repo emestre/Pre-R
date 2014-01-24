@@ -28,7 +28,10 @@ public final class R {
         public static final int ic_action_camera=0x7f020000;
         public static final int ic_action_search=0x7f020001;
         public static final int ic_launcher=0x7f020002;
-        public static final int prer_logo=0x7f020003;
+        public static final int ic_menu_call=0x7f020003;
+        public static final int ic_menu_directions=0x7f020004;
+        public static final int ic_menu_goto=0x7f020005;
+        public static final int prer_logo=0x7f020006;
     }
     public static final class id {
         public static final int action_settings=0x7f09001a;
@@ -53,11 +56,11 @@ public final class R {
         public static final int procedure_info_price=0x7f090001;
         public static final int procedure_listView=0x7f090006;
         public static final int results_list=0x7f090013;
-        public static final int retake_picture_button=0x7f09000e;
+        public static final int retake_picture_button=0x7f09000d;
         public static final int review_bill=0x7f09000c;
         public static final int search_bar=0x7f09000f;
         public static final int search_button=0x7f090012;
-        public static final int upload_bill_button=0x7f09000d;
+        public static final int upload_bill_button=0x7f09000e;
         public static final int zip_code_edittext=0x7f090011;
         public static final int zipcode_search_area=0x7f090010;
     }
