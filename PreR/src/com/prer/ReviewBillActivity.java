@@ -25,6 +25,8 @@ public class ReviewBillActivity extends Activity {
     	String path = (String) getIntent().getExtras().get("path");
     	// create a bitmap image from the file path
     	Bitmap billImage = BitmapFactory.decodeFile(path);
+    	
+    	// rotate the image 90 degrees clockwise
     	Matrix rotateMatrix = new Matrix();
     	rotateMatrix.postRotate(90);
     	Bitmap rotatedImage = Bitmap.createBitmap(billImage, 0, 0, billImage.getWidth(), 

@@ -53,11 +53,11 @@ public final class R {
         public static final int procedure_info_price=0x7f090001;
         public static final int procedure_listView=0x7f090006;
         public static final int results_list=0x7f090013;
-        public static final int retake_picture_button=0x7f09000e;
+        public static final int retake_picture_button=0x7f09000d;
         public static final int review_bill=0x7f09000c;
         public static final int search_bar=0x7f09000f;
         public static final int search_button=0x7f090012;
-        public static final int upload_bill_button=0x7f09000d;
+        public static final int upload_bill_button=0x7f09000e;
         public static final int zip_code_edittext=0x7f090011;
         public static final int zipcode_search_area=0x7f090010;
     }
