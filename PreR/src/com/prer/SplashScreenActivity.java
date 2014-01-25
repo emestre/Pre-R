@@ -9,7 +9,7 @@ import android.view.WindowManager;
 
 public class SplashScreenActivity extends Activity {
 	
-    private final int SPLASH_DISPLAY_TIME = 1500;
+    private final int SPLASH_DISPLAY_TIME = 1750;
 
     /** Called when the activity is first created. */
     @Override
