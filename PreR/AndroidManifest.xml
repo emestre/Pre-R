@@ -51,6 +51,12 @@
         </activity>
         
         <activity
+            android:name="com.prer.UploadedBillActivity"
+            android:label="@string/upload_status_title"
+            android:screenOrientation="portrait" >
+        </activity>
+        
+        <activity
             android:name="com.prer.SearchActivity"
             android:label="@string/title_activity_search" >
         </activity>

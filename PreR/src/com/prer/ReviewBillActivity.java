@@ -1,6 +1,7 @@
 package com.prer;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -44,6 +45,7 @@ public class ReviewBillActivity extends Activity {
     }
     
     public void uploadBillClick(View view) {
-    	
+    	Intent intent = new Intent(this, UploadedBillActivity.class);
+    	startActivity(intent);
     }
 }
