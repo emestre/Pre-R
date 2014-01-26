@@ -71,6 +71,10 @@
             android:label="@string/title_activity_procedure_information" >
         </activity>
         
+        <uses-library android:name="android.test.runner" />
+        
     </application>
-
+	<instrumentation
+	  android:name="com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
+	  android:targetPackage="com.prer"/>
 </manifest>
