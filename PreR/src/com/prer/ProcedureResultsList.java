@@ -6,10 +6,13 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 
+import org.apache.http.client.ClientProtocolException;
 import org.json.JSONStringer;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -70,7 +73,6 @@ public class ProcedureResultsList extends Activity {
 	}
 
 	private void getData() {
-
 		String json = null;
 		try {
 			InputStream is = getAssets().open(procedureName + ".json");
@@ -94,7 +96,7 @@ public class ProcedureResultsList extends Activity {
 			
 		} catch (IOException ex) {
 			ex.printStackTrace();
-		}
+		} 
 	}
 
 	@Override
