@@ -73,6 +73,14 @@ public class ProcedureResultsList extends Activity {
 	}
 
 	private void getData() {
+		ClientQuery query = new ClientQuery();
+		query.getProcedures("Ankle X-Ray", "94539", new GetResponseCallback() {
+			@Override
+			void onDataReceived(String response) {
+				Log.i("Server Response", response);
+			}
+		});
+		
 		String json = null;
 		try {
 			InputStream is = getAssets().open(procedureName + ".json");
