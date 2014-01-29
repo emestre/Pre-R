@@ -1,23 +1,13 @@
 package com.prer;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 
-import org.apache.http.client.ClientProtocolException;
-import org.json.JSONStringer;
-
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -43,13 +33,45 @@ public class ProcedureResultsList extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		final Context context= getApplicationContext();
-
 		procedureName = getIntent().getExtras().getString("PROCEDURE");
 		procedureZip = getIntent().getExtras().getString("ZIPCODE");
 		filteredProcedures = new ArrayList<Procedure>();
-		getData();
-		adapter = new ProcedureViewAdapter(this, filteredProcedures);
+		createProcedureList();
+		
+	}
+
+	private void createProcedureList() {
+		ClientQuery query = new ClientQuery();
+		query.getProcedures(procedureName, procedureZip, 
+				new GetResponseCallback() {
+			@Override
+			void onDataReceived(String response) {
+				parseProceduresFromResponse(response);
+				populateProcedureList();
+			}
+		});
+	}
+	
+	private void parseProceduresFromResponse(String response) {
+		JsonElement elem = new JsonParser().parse(response);
+		JsonArray array = elem.getAsJsonArray();
+		for(int index = 0; index < array.size(); ++index) {
+			elem = array.get(index);
+			JsonObject obj = elem.getAsJsonObject();
+			Procedure procedure = 
+					new Procedure(obj.get("proc_name").getAsString(),
+							obj.get("zip_code").getAsString());
+			procedure.setPrice("$" + obj.get("cost").getAsString());
+			procedure.setDistance(obj.get("dist").getAsString() + "mi");
+			procedure.setHospital(obj.get("hosp_name").getAsString());
+			filteredProcedures.add(procedure);
+		}
+		Collections.sort(filteredProcedures, new PriceComparator());
+	}
+	
+	private void populateProcedureList() {
+		final Context context = getApplicationContext();
+		adapter = new ProcedureViewAdapter(context, filteredProcedures);
 		setContentView(R.layout.activity_procedure_results_list);
 		procedureListView = (ListView) findViewById(R.id.procedure_listView);
 		procedureListView.setAdapter(adapter);
@@ -68,43 +90,7 @@ public class ProcedureResultsList extends Activity {
 						.findViewById(R.id.hospital_textView)).getText().toString());
 				startActivity(intent);
 			}
-
 		});
-	}
-
-	private void getData() {
-		ClientQuery query = new ClientQuery();
-		query.getProcedures("Ankle X-Ray", "94539", new GetResponseCallback() {
-			@Override
-			void onDataReceived(String response) {
-				Log.i("Server Response", response);
-			}
-		});
-		
-		String json = null;
-		try {
-			InputStream is = getAssets().open(procedureName + ".json");
-			int size = is.available();
-			byte[] buffer = new byte[size];
-			is.read(buffer);
-			is.close();
-			json = new String(buffer, "UTF-8");
-
-			Gson gson = new Gson();
-			ProcedureSet procedureSet = gson.fromJson(json, ProcedureSet.class);
-			Procedure[] procs = procedureSet.getProcedures();
-			
-			for (Procedure proc : procs) {
-				if (proc.zipcode.equals(procedureZip)) {
-					filteredProcedures.add(proc);
-				}
-			}
-			
-			Collections.sort(filteredProcedures, new PriceComparator());
-			
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} 
 	}
 
 	@Override

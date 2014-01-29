@@ -36,6 +36,7 @@
         <item>Shoulder Cast</item>
         <item>Shoulder Surgery</item>
         <item>Shoulder Surgery</item>
+        <item>Ankle X-Ray</item>
     </string-array>
     <string-array name="zipcode_list">
         <item>93405</item>
@@ -58,6 +59,7 @@
         <item>93405</item>
         <item>93405</item>
         <item>93401</item>
+        <item>94539</item>
     </string-array>
 
     <string name="incorrect_zip">Please enter a valid zip code</string>

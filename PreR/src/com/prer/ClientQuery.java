@@ -3,6 +3,8 @@ package com.prer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// Design adapted from http://stackoverflow.com/questions/8267928/android-rest-client-sample
+
 public class ClientQuery {
 	private static final String BASE_URL = "http://prer-backend.appspot.com/services";
 	
