@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -53,17 +55,26 @@ public class ProcedureResultsList extends Activity {
 	}
 	
 	private void parseProceduresFromResponse(String response) {
+		Log.i("RESPONSE", response);
 		JsonElement elem = new JsonParser().parse(response);
 		JsonArray array = elem.getAsJsonArray();
+		String hospital_addr = null;
+		String hospital_name = null;
 		for(int index = 0; index < array.size(); ++index) {
 			elem = array.get(index);
 			JsonObject obj = elem.getAsJsonObject();
 			Procedure procedure = 
-					new Procedure(obj.get("proc_name").getAsString(),
+					new Procedure(WordUtils.capitalize(obj.get("proc_name").getAsString()),
 							obj.get("zip_code").getAsString());
 			procedure.setPrice("$" + obj.get("cost").getAsString());
-			procedure.setDistance(obj.get("dist").getAsString() + "mi");
-			procedure.setHospital(obj.get("hosp_name").getAsString());
+			procedure.setDistance(obj.get("dist").getAsString() + " miles");
+			hospital_name = WordUtils.capitalize(obj.get("hosp_name").getAsString());
+			hospital_addr = hospital_name;
+			hospital_addr += "\n" + WordUtils.capitalize(obj.get("address").getAsString()); 
+			hospital_addr += "\n" + WordUtils.capitalize(obj.get("city").getAsString()); 
+			hospital_addr +=  " " + obj.get("zip_code").getAsString(); 
+			procedure.setHospitalName(hospital_name);
+			procedure.setHospital(hospital_addr);
 			filteredProcedures.add(procedure);
 		}
 		Collections.sort(filteredProcedures, new PriceComparator());
@@ -86,8 +97,8 @@ public class ProcedureResultsList extends Activity {
 						.findViewById(R.id.name_textView)).getText().toString());
 				intent.putExtra("PRICE",  ((TextView) arg1
 						.findViewById(R.id.price_textView)).getText().toString());
-				intent.putExtra("HOSPITAL",  ((TextView) arg1
-						.findViewById(R.id.hospital_textView)).getText().toString());
+				Procedure procedure = ((ProcedureView)arg1).getProcedure();
+				intent.putExtra("HOSPITAL",  procedure.getHospital());
 				startActivity(intent);
 			}
 		});

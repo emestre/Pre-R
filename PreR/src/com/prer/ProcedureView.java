@@ -30,7 +30,11 @@ public class ProcedureView extends LinearLayout {
 		priceTextView.setText(procedure.price);
 		nameTextView.setText(procedure.name);
 		distanceTextView.setText(procedure.distance);
-		hospitalTextView.setText(procedure.hospital);
+		hospitalTextView.setText(procedure.hospital_name);
+	}
+	
+	public Procedure getProcedure() {
+		return procedure;
 	}
 	
 }
