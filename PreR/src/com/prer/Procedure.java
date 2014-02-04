@@ -8,6 +8,7 @@ public class Procedure {
 	public String zipcode;
 	public String price;
 	public String hospital;
+	public String hospital_name;
 	public String distance;
 	private Map<String , Object> otherProperties = new HashMap<String , Object>();
 	
@@ -38,6 +39,14 @@ public class Procedure {
 
 	public String getHospital() {
 		return hospital;
+	}
+	
+	public void setHospitalName(String hospital) {
+		this.hospital_name = hospital;
+	}
+
+	public String getHospitalName() {
+		return hospital_name;
 	}
 
 	public String getName() {

@@ -29,7 +29,7 @@ public class ProcedureInformation extends Activity {
 		
 		procedureNameView.setText(getIntent().getExtras().getString("PROCEDURE"));
 		procedurePriceView.setText(getIntent().getExtras().getString("PRICE"));
-		procedureHospitalView.setText(getIntent().getExtras().getString("HOSPITAL") + getResources().getString(R.string.hospital_info));
+		procedureHospitalView.setText(getIntent().getExtras().getString("HOSPITAL"));
 		
 
 		hospitalPhone.setText("Call Number");
