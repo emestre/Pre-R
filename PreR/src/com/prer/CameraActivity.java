@@ -4,18 +4,22 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Point;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 /** The activity that will display the camera preview. */
 public class CameraActivity extends Activity {
@@ -48,7 +52,8 @@ public class CameraActivity extends Activity {
         Log.d(TAG, "new camera instance has been created");
     } 
     
-    private void createCamera() {
+    @SuppressLint("NewApi")
+	private void createCamera() {
     	// create an instance of Camera
         mCamera = getCameraInstance();
         
@@ -56,16 +61,62 @@ public class CameraActivity extends Activity {
         Camera.Parameters params = mCamera.getParameters();
         Camera.Size previewSize = params.getPreviewSize();
         
+        Display display = getWindowManager().getDefaultDisplay();
+        int displayWidth = 0, displayHeight = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2) {
+        	Point displaySize = new Point();
+        	display.getSize(displaySize);
+            displayWidth = displaySize.x;
+            displayHeight = displaySize.y;
+        }
+        else {
+        	displayWidth = display.getWidth();  // deprecated
+        	displayHeight = display.getHeight();
+        }
+        
+        // get screen density scale to convert pixels to density independent pixels
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        float density = metrics.density;
+//        int heightDP = (int) Math.ceil(previewSize.height * density);
+        int widthDP = (int) Math.ceil(previewSize.width * density);
+        int heightDP = (widthDP * displayHeight) / displayWidth;
+        
+        Log.d(TAG, "density scaled: " + density);
+        
+        Log.d(TAG, "camera height in pixels: " + previewSize.height);
+        Log.d(TAG, "camera height in DP: " + heightDP);
+        Log.d(TAG, "camera width in pixels: " + previewSize.width);
+        Log.d(TAG, "camera width in DP: " + widthDP);
+        
+        
+        Log.d(TAG, "default screen size:");
+        Log.d(TAG, "screen height: " + displayHeight);
+        Log.d(TAG, "screen width: " + displayWidth);
+        Log.d(TAG, "");
+        
+        Log.d(TAG, "supported preview sizes:");
+        List<Camera.Size> list = params.getSupportedPreviewSizes();
+        Camera.Size size;
+        for (int i = 0; i < list.size(); i++) {
+        	size = list.get(i);
+        	Log.d(TAG, "height:" + size.height);
+        	Log.d(TAG, "width: " + size.width);
+        }
+        
+        
         // set layout parameters to the width and height of camera preview
         // width and height are switched for portrait mode
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-        									previewSize.height, previewSize.width);
+//        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+//        									 previewSize.height, previewSize.height * 4 / 3);
+//        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+//        lp.addRule(RelativeLayout.CENTER_VERTICAL);
         
         // create our Preview view and set it as the content of our activity
         mPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         // applying layout parameters to the camera preview layout
-        preview.setLayoutParams(lp);
+//        preview.setLayoutParams(lp);
         preview.addView(mPreview);
     }
     
@@ -124,6 +175,7 @@ public class CameraActivity extends Activity {
                 Log.d(TAG, "Error creating media file, check storage permissions: ");
                 return;
             }
+            
             try {
                 FileOutputStream fos = new FileOutputStream(billImage);
                 fos.write(data);
