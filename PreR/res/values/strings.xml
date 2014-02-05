@@ -76,7 +76,7 @@
     <string name="upload_success_message">Your bill has been successfully uploaded.</string>
     <string name="thank_you_message">Thank you for making health care healthier!</string>
     <string name="gohome_button">Home</string>
-    <string name="upload_another_button">Upload Another Bill</string>
+    <string name="upload_another_button">Upload Another Page</string>
     <string name="upload_status_title">Upload Status</string>
 
 </resources>
