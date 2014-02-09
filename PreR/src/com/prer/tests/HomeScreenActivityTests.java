@@ -27,8 +27,7 @@ public class HomeScreenActivityTests extends
 
 	public void testButtonsDisplayed() {
 		HomeSearchButton.isDisplayed();
-		CameraAPIButton.isDisplayed();
-		CameraIntentButton.isDisplayed();
+		CameraButton.isDisplayed();
 	}
 
 	public void testSearchButton() {
@@ -37,7 +36,7 @@ public class HomeScreenActivityTests extends
 	}
 	
 	public void testCameraAPIButton() {
-		CameraAPIButton.click();
+		CameraButton.click();
 		CaptureButton.isDisplayed();
 	}
 }

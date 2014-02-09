@@ -5,17 +5,12 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.FrameLayout.LayoutParams;
-import android.widget.RelativeLayout;
 
 /** A basic Camera preview class. */
 @SuppressLint("ViewConstructor")
@@ -34,18 +29,7 @@ public class CameraPreview extends ViewGroup implements SurfaceHolder.Callback {
         
         mSurfaceView = new SurfaceView(context);
         
-//        Button captureButton = new Button(context);
-//        RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
-//        												RelativeLayout.LayoutParams.WRAP_CONTENT, 
-//        												RelativeLayout	.LayoutParams.WRAP_CONTENT);
-//        buttonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-//        buttonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-//        captureButton.setText("Capture");
-//        captureButton.bringToFront();
-//        captureButton.setLayoutParams(buttonParams);
-        
         this.addView(mSurfaceView);
-//        this.addView(captureButton);
 
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
@@ -135,6 +119,7 @@ public class CameraPreview extends ViewGroup implements SurfaceHolder.Callback {
 
         if (mSupportedPreviewSizes != null) {
            mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
+           
            Log.d(TAG, "screen width = " + width + " screen height = " + height);
            Log.d(TAG, "width = " + mPreviewSize.width + " height = " + mPreviewSize.height);
         }

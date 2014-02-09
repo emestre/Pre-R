@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="25dp"
-        android:layout_marginTop="75dp"
+        android:layout_marginTop="50dp"
         android:text="@string/upload_success_message"
         android:textSize="20sp"
         android:gravity="center" />
@@ -40,6 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="25dp"
+        android:layout_marginBottom="50dp"
         android:text="@string/thank_you_message"
         android:textSize="20sp"
         android:gravity="center" />

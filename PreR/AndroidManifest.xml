@@ -41,19 +41,19 @@
         
         <activity
             android:name="com.prer.CameraActivity"
-            android:label="@string/capture_bill_title"
+            android:label="@string/title_capture_bill"
             android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.prer.ReviewBillActivity"
-            android:label="@string/review_bill_title"
+            android:label="@string/title_review_bill"
             android:screenOrientation="portrait" >
         </activity>
         
         <activity
             android:name="com.prer.UploadedBillActivity"
-            android:label="@string/upload_status_title"
+            android:label="@string/title_uploaded_bill"
             android:screenOrientation="portrait" >
         </activity>
         
