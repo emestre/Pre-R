@@ -1,8 +1,10 @@
 package com.prer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -11,6 +13,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import android.location.Geocoder;
+import android.location.Address;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -31,6 +35,9 @@ public class ProcedureResultsList extends Activity {
 	private String procedureName;
 	private String procedureZip;
 	private ListView procedureListView;
+	
+	private int radius = 25;
+	private int maxResults = 2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,20 +45,32 @@ public class ProcedureResultsList extends Activity {
 		procedureName = getIntent().getExtras().getString("PROCEDURE");
 		procedureZip = getIntent().getExtras().getString("ZIPCODE");
 		filteredProcedures = new ArrayList<Procedure>();
-		createProcedureList();
+		createProcedureList(this);
 		
 	}
 
-	private void createProcedureList() {
-		ClientQuery query = new ClientQuery();
-		query.getProcedures(procedureName, procedureZip, 
-				new GetResponseCallback() {
-			@Override
-			void onDataReceived(String response) {
-				parseProceduresFromResponse(response);
-				populateProcedureList();
-			}
-		});
+	private void createProcedureList(Context context) {
+		try {
+			// Get lat,long from location
+			Geocoder geo = new Geocoder(context);
+			List<Address> addresses = geo.getFromLocationName(procedureZip, maxResults);
+			Address location = addresses.get(0);
+			
+			// Query server for nearest instances
+			ClientQuery query = new ClientQuery();
+			query.getProceduresByName(procedureName, radius, 
+					location.getLatitude(), location.getLongitude(), 
+					new GetResponseCallback() {
+				@Override
+				void onDataReceived(String response) {
+					parseProceduresFromResponse(response);
+					populateProcedureList();
+				}
+			});
+		} catch (IOException e) {
+			// TODO: retry/exit gracefully...do something
+			e.printStackTrace();
+		}
 	}
 	
 	private void parseProceduresFromResponse(String response) {
@@ -63,16 +82,23 @@ public class ProcedureResultsList extends Activity {
 		for(int index = 0; index < array.size(); ++index) {
 			elem = array.get(index);
 			JsonObject obj = elem.getAsJsonObject();
+			
+			JsonElement innerElem = obj.get("service");
+			JsonObject service = innerElem.getAsJsonObject();
+			
+			innerElem = obj.get("hospital");
+			JsonObject hospital = innerElem.getAsJsonObject();
+			
 			Procedure procedure = 
-					new Procedure(WordUtils.capitalize(obj.get("proc_name").getAsString()),
-							obj.get("zip_code").getAsString());
+					new Procedure(WordUtils.capitalize(service.get("name").getAsString()),
+							hospital.get("zip_code").getAsString());
 			procedure.setPrice("$" + obj.get("cost").getAsString());
-			procedure.setDistance(obj.get("dist").getAsString() + " miles");
-			hospital_name = WordUtils.capitalize(obj.get("hosp_name").getAsString());
+			procedure.setDistance(obj.get("distance").getAsString() + " miles");
+			hospital_name = WordUtils.capitalize(hospital.get("name").getAsString());
 			hospital_addr = hospital_name;
-			hospital_addr += "\n" + WordUtils.capitalize(obj.get("address").getAsString()); 
-			hospital_addr += "\n" + WordUtils.capitalize(obj.get("city").getAsString()); 
-			hospital_addr +=  " " + obj.get("zip_code").getAsString(); 
+			hospital_addr += "\n" + WordUtils.capitalize(hospital.get("street").getAsString()); 
+			hospital_addr += "\n" + WordUtils.capitalize(hospital.get("city").getAsString()); 
+			hospital_addr +=  " " + hospital.get("zip_code").getAsString(); 
 			procedure.setHospitalName(hospital_name);
 			procedure.setHospital(hospital_addr);
 			filteredProcedures.add(procedure);
