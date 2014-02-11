@@ -1,9 +1,7 @@
 package com.prer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -14,7 +12,6 @@ import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -57,8 +54,6 @@ public class CameraActivity extends Activity {
         LinearLayout popupLayout = new LinearLayout(this);
         popupLayout.setOrientation(LinearLayout.VERTICAL);
         
-        
-                
         // open the camera in onResume() so it can be properly released and re-opened
     }
     
@@ -68,7 +63,6 @@ public class CameraActivity extends Activity {
         
         mCamera = getCameraInstance();
         mPreview.setCamera(mCamera);
-//        createCamera();
         
         Log.d(TAG, "new camera instance has been created");
     }
@@ -87,63 +81,6 @@ public class CameraActivity extends Activity {
         
         Log.d(TAG, "camera preview paused, camera has been released");
     }
-    
-//	private void createCamera() {
-//    	// create an instance of Camera
-//        mCamera = getCameraInstance();
-//        
-//        // get the default preview size for the camera
-////        Camera.Parameters params = mCamera.getParameters();
-////        Camera.Size previewSize = params.getPreviewSize();
-////        
-////        Display display = getWindowManager().getDefaultDisplay();
-////        int displayWidth = 0, displayHeight = 0;
-////        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2) {
-////        	Point displaySize = new Point();
-////        	display.getSize(displaySize);
-////            displayWidth = displaySize.x;
-////            displayHeight = displaySize.y;
-////        }
-////        else {
-////        	displayWidth = display.getWidth();  // deprecated
-////        	displayHeight = display.getHeight();
-////        }
-//        
-//        // get screen density scale to convert pixels to density independent pixels
-////        DisplayMetrics metrics = new DisplayMetrics();
-////        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-////        float density = metrics.density;
-//////        int heightDP = (int) Math.ceil(previewSize.height * density);
-////        int widthDP = (int) Math.ceil(previewSize.width * density);
-////        int heightDP = (widthDP * displayHeight) / displayWidth;
-////        
-////        Log.d(TAG, "density scaled: " + density);
-////        
-////        Log.d(TAG, "camera height in pixels: " + previewSize.height);
-////        Log.d(TAG, "camera height in DP: " + heightDP);
-////        Log.d(TAG, "camera width in pixels: " + previewSize.width);
-////        Log.d(TAG, "camera width in DP: " + widthDP);
-////        
-////        
-////        Log.d(TAG, "default screen size:");
-////        Log.d(TAG, "screen height: " + displayHeight);
-////        Log.d(TAG, "screen width: " + displayWidth);
-////        Log.d(TAG, "");
-////        
-////        Log.d(TAG, "supported preview sizes:");
-////        List<Camera.Size> list = params.getSupportedPreviewSizes();
-////        Camera.Size size;
-////        for (int i = 0; i < list.size(); i++) {
-////        	size = list.get(i);
-////        	Log.d(TAG, "height:" + size.height);
-////        	Log.d(TAG, "width: " + size.width);
-////        }
-//        
-//        // create our Preview view and set it as the content of our activity
-//        mPreview = new CameraPreview(this, mCamera);
-//        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-//        preview.addView(mPreview);
-//    }
     
     /** A safe way to get an instance of the Camera object. */
     private static Camera getCameraInstance() {
