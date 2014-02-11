@@ -82,18 +82,20 @@ public class CameraPreview extends ViewGroup implements SurfaceHolder.Callback {
 
         // set preview size and make any resize, rotate or reformatting changes here
 
+        // get the camera parameters
         Camera.Parameters params = mCamera.getParameters();
-        // rotate camera 90 degrees to portrait
-        mCamera.setDisplayOrientation(90);
-        // rotate the image file so it's oriented correctly (portrait) when viewed in photo viewer
-        params.setRotation(90);
         
         // set camera preview to auto focus if available
         List<String> focusModes = params.getSupportedFocusModes();
         if (focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
-          // auto focus mode is supported
+        	// auto focus mode is supported
         	params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         }
+        
+        // rotate camera 90 degrees to portrait
+        mCamera.setDisplayOrientation(90);
+        // rotate the image file so it's oriented correctly (portrait) when viewed in photo viewer
+        params.setRotation(90);
         
         // set the preview size to the aspect ratio calculated by getOptimalPreviewSize()
         params.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
