@@ -13,15 +13,16 @@ import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
 /** The activity that will display the camera preview. */
-public class CameraActivity extends Activity {
+public class CameraActivity extends Activity implements OnClickListener {
 
     private static final String TAG = "CameraActivity";
     protected static final String KEY_IMAGE_PATH = "image_path";
@@ -42,17 +43,17 @@ public class CameraActivity extends Activity {
         // link this activity to the camera preview XML file
         this.setContentView(R.layout.layout_camera);
         
+        // set the button click listeners
+        Button capture = (Button) this.findViewById(R.id.camera_capture_button);
+        capture.setOnClickListener(this);
+        ImageButton help = (ImageButton) this.findViewById(R.id.camera_help_button);
+        help.setOnClickListener(this);
+        
         // create our Preview object
         mPreview = new CameraPreview(this);
         // set the preview object as the view of the FrameLayout
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
-        
-        // create the help pop-up
-        TextView popupText = new TextView(this);
-        popupText.setText("My sample popup message.\nWill display hints to user.");
-        LinearLayout popupLayout = new LinearLayout(this);
-        popupLayout.setOrientation(LinearLayout.VERTICAL);
         
         // open the camera in onResume() so it can be properly released and re-opened
     }
@@ -74,7 +75,6 @@ public class CameraActivity extends Activity {
         // release the camera immediately on pause event so it can be used by other apps
         if (mCamera != null){
         	mCamera.setPreviewCallback(null);
-//            mPreview.getHolder().removeCallback(mPreview);
             mCamera.release();
             mCamera = null;
         }
@@ -99,16 +99,38 @@ public class CameraActivity extends Activity {
         return c;
     }
     
-    public void helpButtonClick(View view) {
-    	
-    }
+	@Override
+	public void onClick(View v) {
+		
+		Log.d(TAG, "in the onClick method");
+		
+		switch (v.getId()) {
+		case R.id.camera_capture_button:
+			mCamera.takePicture(null, null, mPicture);
+	        Log.d(TAG, "picture taken");
+	        break;
+	     
+		case R.id.camera_help_button:
+//			mPopup.showAsDropDown(findViewById(R.id.camera_layout));
+			break;
+			
+		default:
+			if (mPopup != null && mPopup.isShowing())
+				mPopup.dismiss();
+			break;
+		}
+	}
     
-    /** Listener method for the capture button. */
-    public void captureClick(View view) {
-    	// get an image from the camera
-        mCamera.takePicture(null, null, mPicture);
-        Log.d(TAG, "picture taken");
-    }
+//    public void helpButtonClick(View view) {
+//    	
+//    }
+//    
+//    /** Listener method for the capture button. */
+//    public void captureClick(View view) {
+//    	// get an image from the camera
+//        mCamera.takePicture(null, null, mPicture);
+//        Log.d(TAG, "picture taken");
+//    }
     
     /** Callback to run when a picture has been taken. */
     private PictureCallback mPicture = new PictureCallback() {
@@ -151,7 +173,7 @@ public class CameraActivity extends Activity {
         	String path = getApplicationContext().getFilesDir().getPath() + 
         				  File.separator + "IMG_" + timeStamp + ".jpg";
         	
-        	// save the image to our app's internal storage
+        	// save the image to the app's internal storage directory
         	try {
         		FileOutputStream fos = new FileOutputStream(path);
 

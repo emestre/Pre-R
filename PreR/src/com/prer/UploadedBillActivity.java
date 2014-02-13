@@ -1,11 +1,12 @@
 package com.prer;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-public class UploadedBillActivity extends Activity {
+import com.actionbarsherlock.app.SherlockActivity;
+
+public class UploadedBillActivity extends SherlockActivity {
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {

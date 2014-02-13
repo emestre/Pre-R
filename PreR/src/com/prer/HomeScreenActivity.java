@@ -9,15 +9,16 @@
 
 package com.prer;
 
-import android.app.Activity;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 
-public class HomeScreenActivity extends Activity {
+public class HomeScreenActivity extends SherlockActivity {
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +29,7 @@ public class HomeScreenActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_homescreen, menu);
+        getSupportMenuInflater().inflate(R.menu.menu_homescreen, menu);
         return true;
     }
     

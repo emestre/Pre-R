@@ -17,16 +17,16 @@
     
     <Button
         android:id="@+id/camera_capture_button"
-        android:layout_width="125dp"
-        android:layout_height="60dp"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="10dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" 
         android:text="@string/capture_button_text"
-        android:textSize="18sp"
-        android:onClick="captureClick" />
+        android:textSize="16sp" />
     
     <ImageButton
+        android:id="@+id/camera_help_button"
         android:contentDescription="@string/help_button_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

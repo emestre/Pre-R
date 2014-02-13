@@ -2,7 +2,8 @@ package com.prer;
 
 import java.io.File;
 
-import android.app.Activity;
+import com.actionbarsherlock.app.SherlockActivity;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,7 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-public class ReviewBillActivity extends Activity {
+public class ReviewBillActivity extends SherlockActivity {
 	
 	private static final String TAG = "ReviewBillActivity";
 	private String mPathToImage;
