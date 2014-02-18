@@ -1,16 +1,18 @@
 package com.prer;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Activity;
 import android.content.Intent;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class ProcedureInformation extends Activity {
+public class ProcedureInformation extends SherlockActivity {
 	protected TextView procedureNameView;
 	protected TextView procedureHospitalView;
 	protected TextView procedurePriceView;
@@ -31,9 +33,9 @@ public class ProcedureInformation extends Activity {
 		hospitalDirections = (Button)findViewById(R.id.hospital_directions);
 		hospitalWebsite = (Button)findViewById(R.id.hospital_website);
 		
-		//procedureNameView.setText(getIntent().getExtras().getString("PROCEDURE"));
-		//procedurePriceView.setText(getIntent().getExtras().getString("PRICE"));
-		//procedureHospitalView.setText(getIntent().getExtras().getString("HOSPITAL"));
+		procedureNameView.setText(getIntent().getExtras().getString("PROCEDURE"));
+		procedurePriceView.setText(getIntent().getExtras().getString("PRICE"));
+		procedureHospitalView.setText(getIntent().getExtras().getString("HOSPITAL"));
 		
 
 		hospitalPhone.setText("Call Number");
@@ -41,6 +43,29 @@ public class ProcedureInformation extends Activity {
 		hospitalWebsite.setText("Search for Website");
 
 		initListeners();
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.procedure_information, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch(item.getItemId())
+		{
+		case R.id.procedure_information_home_button:
+			Intent intent = new Intent(this, HomeScreenActivity.class);
+			startActivity(intent);
+			return true;
+			
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 	
 	private void initListeners () {
@@ -75,12 +100,6 @@ public class ProcedureInformation extends Activity {
 		});
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.procedure_information, menu);
-		return true;
-	}
-
+	
 	
 }
