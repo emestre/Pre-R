@@ -1,69 +1,112 @@
 package com.prer;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
+import org.apache.commons.lang3.text.WordUtils;
+
+import com.actionbarsherlock.app.SherlockActivity;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.prer.ProcedureResultsList.PriceComparator;
+
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.Menu;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast; 
+import android.widget.Toast;
 
 //TODO Add CPT Code functionality
 //TODO Write a bunch of test cases
 //TODO Link results to the hospital view
-public class SearchActivity extends Activity {
+public class SearchActivity extends SherlockActivity {
 
+	private static final long MIN_TIME_BW_UPDATES = 30000;
+	private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 1000;
 	protected ArrayAdapter<String> resultsAdapter; // List adapter to display
 													// after search
-	protected ArrayList<Procedure> mainProcedureList; // List containing set of
-														// all procedures
-	protected ArrayList<Procedure> filteredProcedures; // Procedures filtered by
-														// zip code
 	protected ArrayList<String> filteredResults; // Procedures filtered by zip
 													// code and by name
 	protected ListView results_listView; // ListView containing search results
 	protected Button searchButton; // Search by zip code Button
 	protected EditText searchEditText; // Search by name EditText
-	protected EditText zipcodeEditText; // Search by zip code EditText
+	protected AutoCompleteTextView addressEditText; // Search by zip code EditText
 	private Context context;
-	private String currentZip;
+	private String currentAddr;
+	private LocationManager locationManager;
+	
+	private ArrayList<String> cities;
+	
+	private final LocationListener mLocationListener = new LocationListener() {
+		@Override
+		public void onLocationChanged(final Location location) {
+		}
+
+		@Override
+		public void onProviderDisabled(String provider) {
+		}
+
+		@Override
+		public void onProviderEnabled(String provider) {
+		}
+
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		initLayout();
-		context = getApplicationContext();
 
-		mainProcedureList = new ArrayList<Procedure>();
-		filteredProcedures = new ArrayList<Procedure>();
+		context = getApplicationContext();
+		initLayout();
 		filteredResults = new ArrayList<String>();
-		String[] defaultProcedures = getResources().getStringArray(
-				R.array.procedure_list); // Gets array of procedure names from
-											// resources
-		String[] defaultZipCodes = getResources().getStringArray(
-				R.array.zipcode_list); // Gets array of zip codes from resources
-		for (int i = 0; i < defaultProcedures.length; i++) {
-			mainProcedureList.add(new Procedure(defaultProcedures[i],
-					defaultZipCodes[i])); // Add all procedures into main list
-		}
 		resultsAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, filteredResults); // Setup
-																		// ListView
-																		// adapter
+				android.R.layout.simple_list_item_1, filteredResults);	
+		
+		BufferedReader reader;
+		cities = new ArrayList<String>();
+		try {
+			reader = new BufferedReader(new InputStreamReader(getAssets().open("cities.txt")));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+			    cities.add(line);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		AutoCompleteTextView autoCompView = (AutoCompleteTextView) findViewById(R.id.zip_code_edittext);
+	    autoCompView.setAdapter(new PlacesAutoCompleteAdapter(this, R.layout.list_item));
+	    
 		results_listView.setAdapter(resultsAdapter);
 		results_listView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -71,13 +114,59 @@ public class SearchActivity extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				Intent intent = new Intent(context, ProcedureResultsList.class);
-				intent.putExtra("PROCEDURE", ((TextView) arg1
-						.findViewById(android.R.id.text1)).getText().toString().toLowerCase());
-				intent.putExtra("ZIPCODE", currentZip);
+				intent.putExtra("PROCEDURE",
+						((TextView) arg1.findViewById(android.R.id.text1))
+								.getText().toString().toLowerCase());
+				intent.putExtra("ADDRESS", currentAddr);
 				startActivity(intent);
 			}
 
 		});
+	
+	}
+
+	protected Address getLocationFromAddress(String zipCode) {
+
+		final Geocoder geocoder = new Geocoder(this);
+		try {
+			List<Address> addresses = geocoder.getFromLocationName(zipCode, 1);
+			if (addresses != null && !addresses.isEmpty()) {
+				Address address = addresses.get(0);
+				return address;
+			} else {
+				// Display appropriate message when Geocoder services are not
+				// available
+				Toast.makeText(this, "Unable to geocode zipcode",
+						Toast.LENGTH_LONG).show();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private void parseProceduresFromResponse(String response) {
+		filteredResults.clear();
+		JsonElement elem = new JsonParser().parse(response);
+		JsonArray array = elem.getAsJsonArray();
+		for (int index = 0; index < array.size(); ++index) {
+			elem = array.get(index);
+			JsonObject obj = elem.getAsJsonObject();
+
+			JsonElement innerElem = obj.get("service");
+			JsonObject service = innerElem.getAsJsonObject();
+
+			innerElem = obj.get("hospital");
+			JsonObject hospital = innerElem.getAsJsonObject();
+
+			Procedure procedure = new Procedure(WordUtils.capitalize(service
+					.get("name").getAsString()), hospital.get("zip_code")
+					.getAsString());
+			if (!filteredResults.contains(procedure.name))
+				filteredResults.add(procedure.name);
+		}
+		if (filteredResults.size() == 0)
+			filteredResults.add(getResources().getString(R.string.no_results));
 	}
 
 	protected void initLayout() {
@@ -86,95 +175,178 @@ public class SearchActivity extends Activity {
 																		// View
 																		// fields
 		searchButton = (Button) findViewById(R.id.search_button);
-		searchEditText = (EditText) findViewById(R.id.search_bar);
-		zipcodeEditText = (EditText) findViewById(R.id.zip_code_edittext);
+		searchEditText = (EditText) findViewById(R.id.search_edittext);
+		addressEditText = (AutoCompleteTextView) findViewById(R.id.zip_code_edittext);
+		addressEditText.setThreshold(1);
+		Location loc = getLocation();
+		if (loc != null)
+			addressEditText.setHint("Using default location");
 
 		searchButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String zipcodeText = zipcodeEditText.getText().toString(); // Get
-																			// entered
-																			// zipcode
-				if (!zipcodeText.isEmpty() && zipcodeText.length() == 5) {
-					filteredProcedures.clear(); // Clear previous filter
-					if (currentZip == null || !currentZip.equals(zipcodeText)) {
-						currentZip = zipcodeText; // Save new zip
-						searchEditText.setText(""); // Clear search field
-					}
-
-					for (Procedure procedure : mainProcedureList) {
-						if (procedure.zipcode.equals(zipcodeText)) {
-							filteredProcedures.add(procedure); // Add all
-																// procedures
-																// that match
-						}
-					}
-
-					searchEditText.setVisibility(View.VISIBLE); // Show search
-																// field
-					searchEditText.requestFocus(); // Set focus
-					getWindow() // Show keyboard
-							.setSoftInputMode(
-									WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+				String zipcodeText = addressEditText.getText().toString();
+				String searchText = searchEditText.getText().toString();
+				if (searchText.isEmpty()) {
+					Toast.makeText(
+							SearchActivity.this,
+							"Please enter at least 1 character in the search field",
+							Toast.LENGTH_LONG).show();
+					return;
+				}
+				Address addr = null;
+				if (!zipcodeText.isEmpty()) {
+					addr = getLocationFromAddress(zipcodeText);
+					currentAddr = zipcodeText;
 				} else {
-					searchEditText.setText("");
-					searchEditText.setVisibility(View.GONE);
-					Toast toast = Toast.makeText(getApplicationContext(),
-							getResources().getString(R.string.incorrect_zip),
-							Toast.LENGTH_SHORT);
-					toast.setGravity(Gravity.CENTER, 0, 0);
-					toast.show();
+					Location location = getLocation();
+					Geocoder geocoder = new Geocoder(SearchActivity.this,
+							Locale.getDefault());
+					List<Address> addresses;
+					try {
+						addresses = geocoder.getFromLocation(
+								location.getLatitude(),
+								location.getLongitude(), 1);
+						addr = addresses.get(0);
+						currentAddr = addr.getPostalCode();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
 				}
+				ClientQuery query = new ClientQuery();
+				query.getProceduresByName(searchText, 25, addr.getLatitude(),
+						addr.getLongitude(), new GetResponseCallback() {
+							@Override
+							void onDataReceived(String response) {
+								parseProceduresFromResponse(response);
+								resultsAdapter.notifyDataSetChanged();
+							}
+						});
 			}
 		});
+	}
 
-		searchEditText.addTextChangedListener(new TextWatcher() {
+	public Location getLocation() {
+		Location location = null;
+		try {
+			locationManager = (LocationManager) getApplicationContext()
+					.getSystemService(LOCATION_SERVICE);
 
-			@Override
-			public void afterTextChanged(Editable arg0) {
-				String searchText = searchEditText.getText().toString(); // Get
-																			// search
-																			// field
-																			// text
-				filteredResults.clear(); // Clear results
-				if (!searchText.isEmpty()) {
-					for (Procedure procedure : filteredProcedures) {
-						if (procedure.name.toLowerCase().contains(
-								searchText.toLowerCase())) {
-							filteredResults.add(procedure.name); // Add
-																	// procedures
-																	// that
-																	// match
+			// getting GPS status
+			boolean isGPSEnabled = locationManager
+					.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+			// getting network status
+			boolean isNetworkEnabled = locationManager
+					.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+			if (!isGPSEnabled && !isNetworkEnabled) {
+				// no network provider is enabled
+			} else {
+				double latitude;
+				double longitude;
+				if (isNetworkEnabled) {
+					locationManager.requestLocationUpdates(
+							LocationManager.NETWORK_PROVIDER,
+							MIN_TIME_BW_UPDATES,
+							MIN_DISTANCE_CHANGE_FOR_UPDATES, mLocationListener);
+					Log.d("Network", "Network Enabled");
+					if (locationManager != null) {
+						location = locationManager
+								.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+						if (location != null) {
+							latitude = location.getLatitude();
+							longitude = location.getLongitude();
 						}
 					}
-					if (filteredResults.size() == 0)
-						filteredResults.add(getResources().getString(
-								R.string.no_results)); // Set default if no
-														// results
 				}
-				resultsAdapter.notifyDataSetChanged(); // Notify adapter that
-														// something has changed
+				// if GPS Enabled get lat/long using GPS Services
+				if (isGPSEnabled) {
+					if (location == null) {
+						locationManager.requestLocationUpdates(
+								LocationManager.GPS_PROVIDER,
+								MIN_TIME_BW_UPDATES,
+								MIN_DISTANCE_CHANGE_FOR_UPDATES,
+								mLocationListener);
+						Log.d("GPS", "GPS Enabled");
+						if (locationManager != null) {
+							location = locationManager
+									.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+							if (location != null) {
+								latitude = location.getLatitude();
+								longitude = location.getLongitude();
+							}
+						}
+					}
+				}
 			}
 
-			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1,
-					int arg2, int arg3) {
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-					int arg3) {
-			}
-
-		});
-
+		return location;
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.search, menu);
-		return true;
+	
+	public ArrayList<String> autocomplete(String typedText) {
+		ArrayList<String> results = new ArrayList<String>();
+		for(String city : cities) {
+			if(city.toLowerCase().contains(typedText.toLowerCase())) {
+				String[] splitCity = city.split(",");
+				city = WordUtils.capitalize(splitCity[0].toLowerCase()) + "," + splitCity[1];
+				results.add(city);
+			}
+			if(results.size() == 10)
+				break;
+		}
+		return results;
 	}
+	
+	private class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
+	    private ArrayList<String> resultList;
 
+	    public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
+	        super(context, textViewResourceId);
+	    }
+
+	    @Override
+	    public int getCount() {
+	        return resultList.size();
+	    }
+
+	    @Override
+	    public String getItem(int index) {
+	        return resultList.get(index);
+	    }
+
+	    @Override
+	    public Filter getFilter() {
+	        Filter filter = new Filter() {
+	            @Override
+	            protected FilterResults performFiltering(CharSequence constraint) {
+	                FilterResults filterResults = new FilterResults();
+	                if (constraint != null) {
+	                    // Retrieve the autocomplete results.
+	                    resultList = autocomplete(constraint.toString());
+
+	                    // Assign the data to the FilterResults
+	                    filterResults.values = resultList;
+	                    filterResults.count = resultList.size();
+	                }
+	                return filterResults;
+	            }
+
+	            @Override
+	            protected void publishResults(CharSequence constraint, FilterResults results) {
+	                if (results != null && results.count > 0) {
+	                    notifyDataSetChanged();
+	                }
+	                else {
+	                    notifyDataSetInvalidated();
+	                }
+	            }};
+	        return filter;
+	    }
+	}
 }

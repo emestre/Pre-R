@@ -10,9 +10,9 @@
     <string name="review_bill_image">View to display bill image.</string>
     <string name="title_review_bill">Review Bill</string>
     <string name="search_edittext_hint">Procedure Name / CPT Code</string>
-    <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_search">Search Procedures</string>
     <string name="zipcode_edittext_hint">Near: Zip Code</string>
-    <string name="search_button_text">Search</string>
+    <string name="search_button_text">Go</string>
 
     <string-array name="procedure_list">
         <item>Ankle X-Ray</item>
@@ -65,10 +65,10 @@
     <string name="no_results">No Results Found</string>
     <string name="capture_button_text">Capture</string>
     <string name="splash_logo_description">The PreR brand logo with application icon and slogan.</string>
-    <string name="title_activity_procedure_results_list">ProcedureResultsList</string>
+    <string name="title_activity_procedure_results_list">Results</string>
     <string name="sort_price">Sort by price</string>
     <string name="sort_distance">Sort by distance</string>
-    <string name="title_activity_procedure_information">ProcedureInformation</string>
+    <string name="title_activity_procedure_information">Procedure Information</string>
     <string name="hospital_info">\n123 Fake St.\nSan Luis Obispo</string>
     <string name="upload_bill_button">Upload</string>
     <string name="retake_picture_button">Retake</string>

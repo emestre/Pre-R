@@ -33,7 +33,7 @@ public class ProcedureResultsList extends Activity {
 	private ArrayList<Procedure> filteredProcedures;
 	private ProcedureViewAdapter adapter;
 	private String procedureName;
-	private String procedureZip;
+	private String procedureAddr;
 	private ListView procedureListView;
 	
 	private int radius = 25;
@@ -43,7 +43,7 @@ public class ProcedureResultsList extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		procedureName = getIntent().getExtras().getString("PROCEDURE");
-		procedureZip = getIntent().getExtras().getString("ZIPCODE");
+		procedureAddr = getIntent().getExtras().getString("ADDRESS");
 		filteredProcedures = new ArrayList<Procedure>();
 		createProcedureList(this);
 		
@@ -53,7 +53,7 @@ public class ProcedureResultsList extends Activity {
 		try {
 			// Get lat,long from location
 			Geocoder geo = new Geocoder(context);
-			List<Address> addresses = geo.getFromLocationName(procedureZip, maxResults);
+			List<Address> addresses = geo.getFromLocationName(procedureAddr, maxResults);
 			Address location = addresses.get(0);
 			
 			// Query server for nearest instances
