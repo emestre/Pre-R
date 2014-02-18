@@ -79,6 +79,7 @@ public class ProcedureResultsList extends Activity {
 		JsonArray array = elem.getAsJsonArray();
 		String hospital_addr = null;
 		String hospital_name = null;
+		String cpt_code = null;
 		for(int index = 0; index < array.size(); ++index) {
 			elem = array.get(index);
 			JsonObject obj = elem.getAsJsonObject();
@@ -99,8 +100,10 @@ public class ProcedureResultsList extends Activity {
 			hospital_addr += "\n" + WordUtils.capitalize(hospital.get("street").getAsString()); 
 			hospital_addr += "\n" + WordUtils.capitalize(hospital.get("city").getAsString()); 
 			hospital_addr +=  " " + hospital.get("zip_code").getAsString(); 
+			cpt_code= service.get("cpt_code").getAsString(); 
 			procedure.setHospitalName(hospital_name);
 			procedure.setHospital(hospital_addr);
+			procedure.setCptCode(cpt_code);
 			filteredProcedures.add(procedure);
 		}
 		Collections.sort(filteredProcedures, new PriceComparator());

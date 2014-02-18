@@ -10,6 +10,7 @@ public class Procedure {
 	public String hospital;
 	public String hospital_name;
 	public String distance;
+	public String cpt_code;
 	private Map<String , Object> otherProperties = new HashMap<String , Object>();
 	
 	public Procedure(String name, String zipcode) {
@@ -44,6 +45,15 @@ public class Procedure {
 	public void setHospitalName(String hospital) {
 		this.hospital_name = hospital;
 	}
+	
+	public void setCptCode(String cpt_code) {
+		this.cpt_code = cpt_code;
+	}
+
+	public String getCptCode() {
+		return cpt_code;
+	}
+
 
 	public String getHospitalName() {
 		return hospital_name;
