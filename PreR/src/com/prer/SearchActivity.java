@@ -58,9 +58,9 @@ public class SearchActivity extends SherlockActivity {
 	protected ListView results_listView; // ListView containing search results
 	protected Button searchButton; // Search by zip code Button
 	protected EditText searchEditText; // Search by name EditText
-	protected AutoCompleteTextView addressEditText; 
+	protected AutoCompleteTextView addressEditText;
 	protected TextView noResultsView;
-	
+
 	private Context context;
 	private String currentAddr;
 	private LocationManager locationManager;
@@ -131,6 +131,10 @@ public class SearchActivity extends SherlockActivity {
 
 	}
 
+	public static boolean isNumeric(String str) {
+		return str.matches("-?\\d+(\\.\\d+)?");
+	}
+
 	protected Address getLocationFromAddress(String addr) {
 
 		final Geocoder geocoder = new Geocoder(this);
@@ -153,6 +157,7 @@ public class SearchActivity extends SherlockActivity {
 		filteredResults.clear();
 		noResultsView.setVisibility(View.GONE);
 		JsonElement elem = new JsonParser().parse(response);
+
 		JsonArray array = elem.getAsJsonArray();
 		for (int index = 0; index < array.size(); ++index) {
 			elem = array.get(index);
@@ -167,6 +172,23 @@ public class SearchActivity extends SherlockActivity {
 		}
 		if (filteredResults.size() == 0)
 			noResultsView.setVisibility(View.VISIBLE);
+	}
+
+	private void parseSingleServiceFromReponse(String response) {
+		filteredResults.clear();
+		noResultsView.setVisibility(View.GONE);
+		JsonElement elem = new JsonParser().parse(response);
+		JsonObject obj = elem.getAsJsonObject();
+		JsonElement innerElem = obj.get("name");
+		if(innerElem == null) {
+			noResultsView.setVisibility(View.VISIBLE);
+			return; 
+		}
+		String name = innerElem.getAsString();
+
+		Procedure procedure = new Procedure(WordUtils.capitalize(name), "");
+		if (!filteredResults.contains(procedure.name))
+			filteredResults.add(procedure.name);
 	}
 
 	protected void initLayout() {
@@ -188,26 +210,7 @@ public class SearchActivity extends SherlockActivity {
 			@Override
 			public void afterTextChanged(Editable s) {
 				String zipcodeText = addressEditText.getText().toString();
-				Address addr = null;
-				if (!zipcodeText.isEmpty()) {
-					currentAddr = zipcodeText;
-				} else {
-					Location location = getLocation();
-					Geocoder geocoder = new Geocoder(SearchActivity.this,
-							Locale.getDefault());
-					List<Address> addresses;
-					try {
-						addresses = geocoder.getFromLocation(
-								location.getLatitude(),
-								location.getLongitude(), 1);
-						addr = addresses.get(0);
-						currentAddr = addr.getLocality();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-				}
-
+				setLocation(zipcodeText);
 			}
 
 			@Override
@@ -233,8 +236,13 @@ public class SearchActivity extends SherlockActivity {
 					noResultsView.setVisibility(View.GONE);
 					return;
 				}
-
-				getResults(zipcodeText, searchText);
+				if (isNumeric(searchText) && searchText.length() == 5) {
+					getResultsByCode(zipcodeText, searchText);
+				} else if(!isNumeric(searchText)) {
+					getResultsByName(zipcodeText, searchText);
+				} else {
+					filteredResults.clear();
+				}
 
 			}
 
@@ -262,13 +270,36 @@ public class SearchActivity extends SherlockActivity {
 							Toast.LENGTH_LONG).show();
 					return;
 				}
-				getResults(zipcodeText, searchText);
+				getResultsByName(zipcodeText, searchText);
 			}
 		});
 	}
-	
-	private void getResults(String zipcodeText, String searchText) {
-		
+
+	private void getResultsByName(String zipcodeText, String searchText) {
+		setLocation(zipcodeText);
+		ClientQuery query = new ClientQuery();
+		query.getServicesByName(searchText, new GetResponseCallback() {
+			@Override
+			void onDataReceived(String response) {
+				parseProceduresFromResponse(response);
+				resultsAdapter.notifyDataSetChanged();
+			}
+		});
+	}
+
+	private void getResultsByCode(String zipcodeText, String searchText) {
+		setLocation(zipcodeText);
+		ClientQuery query = new ClientQuery();
+		query.getServicesByCptCode(searchText, new GetResponseCallback() {
+			@Override
+			void onDataReceived(String response) {
+				parseSingleServiceFromReponse(response);
+				resultsAdapter.notifyDataSetChanged();
+			}
+		});
+	}
+
+	private void setLocation(String zipcodeText) {
 		Address addr = null;
 		if (!zipcodeText.isEmpty()) {
 			addr = getLocationFromAddress(zipcodeText);
@@ -279,8 +310,7 @@ public class SearchActivity extends SherlockActivity {
 					Locale.getDefault());
 			List<Address> addresses;
 			try {
-				addresses = geocoder.getFromLocation(
-						location.getLatitude(),
+				addresses = geocoder.getFromLocation(location.getLatitude(),
 						location.getLongitude(), 1);
 				addr = addresses.get(0);
 				currentAddr = addr.getPostalCode();
@@ -289,14 +319,6 @@ public class SearchActivity extends SherlockActivity {
 			}
 
 		}
-		ClientQuery query = new ClientQuery();
-		query.getServicesByName(searchText, new GetResponseCallback() {
-			@Override
-			void onDataReceived(String response) {
-				parseProceduresFromResponse(response);
-				resultsAdapter.notifyDataSetChanged();
-			}
-		});
 	}
 
 	public Location getLocation() {

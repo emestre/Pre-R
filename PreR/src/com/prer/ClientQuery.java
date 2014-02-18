@@ -42,6 +42,21 @@ public class ClientQuery {
 		}).execute();
 	}
 	
+	public void getServicesByCptCode(String code, final GetResponseCallback callback) {
+		String url = null;
+		try {
+			url = BASE_URL + SERVICES_SEARCH + URLEncoder.encode("cpt_code=" + code, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		new GetTask(url, new RestTaskCallback() {
+			@Override
+			public void onTaskComplete(String result) {
+				callback.onDataReceived(result);	
+			}
+		}).execute();
+	}
+	
 	public void getProceduresByName(String name, int radius, 
 			double lat, double lng, int limit, int offset,
 			final GetResponseCallback callback) {
