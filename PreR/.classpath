@@ -6,7 +6,6 @@
 	<classpathentry kind="lib" path="libs/gson-2.2.4.jar"/>
 	<classpathentry kind="lib" path="libs/espresso-1.1-bundled.jar"/>
 	<classpathentry kind="lib" path="libs/commons-lang3-3.2.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eliot/Documents/GitHub/Pre-R/PreR/libs/android-support-v4.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin/classes"/>

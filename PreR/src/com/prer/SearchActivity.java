@@ -27,6 +27,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.content.Context;
 import android.content.Intent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -56,13 +58,15 @@ public class SearchActivity extends SherlockActivity {
 	protected ListView results_listView; // ListView containing search results
 	protected Button searchButton; // Search by zip code Button
 	protected EditText searchEditText; // Search by name EditText
-	protected AutoCompleteTextView addressEditText; // Search by zip code EditText
+	protected AutoCompleteTextView addressEditText; 
+	protected TextView noResultsView;
+	
 	private Context context;
 	private String currentAddr;
 	private LocationManager locationManager;
-	
+
 	private ArrayList<String> cities;
-	
+
 	private final LocationListener mLocationListener = new LocationListener() {
 		@Override
 		public void onLocationChanged(final Location location) {
@@ -89,15 +93,16 @@ public class SearchActivity extends SherlockActivity {
 		initLayout();
 		filteredResults = new ArrayList<String>();
 		resultsAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, filteredResults);	
-		
+				android.R.layout.simple_list_item_1, filteredResults);
+
 		BufferedReader reader;
 		cities = new ArrayList<String>();
 		try {
-			reader = new BufferedReader(new InputStreamReader(getAssets().open("cities.txt")));
+			reader = new BufferedReader(new InputStreamReader(getAssets().open(
+					"cities.txt")));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-			    cities.add(line);
+				cities.add(line);
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -105,8 +110,9 @@ public class SearchActivity extends SherlockActivity {
 			e.printStackTrace();
 		}
 		AutoCompleteTextView autoCompView = (AutoCompleteTextView) findViewById(R.id.zip_code_edittext);
-	    autoCompView.setAdapter(new PlacesAutoCompleteAdapter(this, R.layout.list_item));
-	    
+		autoCompView.setAdapter(new PlacesAutoCompleteAdapter(this,
+				R.layout.list_item));
+
 		results_listView.setAdapter(resultsAdapter);
 		results_listView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -122,20 +128,18 @@ public class SearchActivity extends SherlockActivity {
 			}
 
 		});
-	
+
 	}
 
-	protected Address getLocationFromAddress(String zipCode) {
+	protected Address getLocationFromAddress(String addr) {
 
 		final Geocoder geocoder = new Geocoder(this);
 		try {
-			List<Address> addresses = geocoder.getFromLocationName(zipCode, 1);
+			List<Address> addresses = geocoder.getFromLocationName(addr, 1);
 			if (addresses != null && !addresses.isEmpty()) {
 				Address address = addresses.get(0);
 				return address;
 			} else {
-				// Display appropriate message when Geocoder services are not
-				// available
 				Toast.makeText(this, "Unable to geocode zipcode",
 						Toast.LENGTH_LONG).show();
 			}
@@ -147,26 +151,22 @@ public class SearchActivity extends SherlockActivity {
 
 	private void parseProceduresFromResponse(String response) {
 		filteredResults.clear();
+		noResultsView.setVisibility(View.GONE);
 		JsonElement elem = new JsonParser().parse(response);
 		JsonArray array = elem.getAsJsonArray();
 		for (int index = 0; index < array.size(); ++index) {
 			elem = array.get(index);
 			JsonObject obj = elem.getAsJsonObject();
+			Log.i("SERVICE", obj.toString());
+			JsonElement innerElem = obj.get("name");
+			String name = innerElem.getAsString();
 
-			JsonElement innerElem = obj.get("service");
-			JsonObject service = innerElem.getAsJsonObject();
-
-			innerElem = obj.get("hospital");
-			JsonObject hospital = innerElem.getAsJsonObject();
-
-			Procedure procedure = new Procedure(WordUtils.capitalize(service
-					.get("name").getAsString()), hospital.get("zip_code")
-					.getAsString());
+			Procedure procedure = new Procedure(WordUtils.capitalize(name), "");
 			if (!filteredResults.contains(procedure.name))
 				filteredResults.add(procedure.name);
 		}
 		if (filteredResults.size() == 0)
-			filteredResults.add(getResources().getString(R.string.no_results));
+			noResultsView.setVisibility(View.VISIBLE);
 	}
 
 	protected void initLayout() {
@@ -177,10 +177,78 @@ public class SearchActivity extends SherlockActivity {
 		searchButton = (Button) findViewById(R.id.search_button);
 		searchEditText = (EditText) findViewById(R.id.search_edittext);
 		addressEditText = (AutoCompleteTextView) findViewById(R.id.zip_code_edittext);
+		noResultsView = (TextView) findViewById(R.id.no_results_view);
 		addressEditText.setThreshold(1);
 		Location loc = getLocation();
 		if (loc != null)
 			addressEditText.setHint("Using default location");
+
+		addressEditText.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				String zipcodeText = addressEditText.getText().toString();
+				Address addr = null;
+				if (!zipcodeText.isEmpty()) {
+					currentAddr = zipcodeText;
+				} else {
+					Location location = getLocation();
+					Geocoder geocoder = new Geocoder(SearchActivity.this,
+							Locale.getDefault());
+					List<Address> addresses;
+					try {
+						addresses = geocoder.getFromLocation(
+								location.getLatitude(),
+								location.getLongitude(), 1);
+						addr = addresses.get(0);
+						currentAddr = addr.getLocality();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				}
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+
+		});
+
+		searchEditText.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				String zipcodeText = addressEditText.getText().toString();
+				String searchText = searchEditText.getText().toString();
+				if (searchText.isEmpty()) {
+					filteredResults.clear();
+					resultsAdapter.notifyDataSetChanged();
+					noResultsView.setVisibility(View.GONE);
+					return;
+				}
+
+				getResults(zipcodeText, searchText);
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+
+		});
 
 		searchButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -194,35 +262,39 @@ public class SearchActivity extends SherlockActivity {
 							Toast.LENGTH_LONG).show();
 					return;
 				}
-				Address addr = null;
-				if (!zipcodeText.isEmpty()) {
-					addr = getLocationFromAddress(zipcodeText);
-					currentAddr = zipcodeText;
-				} else {
-					Location location = getLocation();
-					Geocoder geocoder = new Geocoder(SearchActivity.this,
-							Locale.getDefault());
-					List<Address> addresses;
-					try {
-						addresses = geocoder.getFromLocation(
-								location.getLatitude(),
-								location.getLongitude(), 1);
-						addr = addresses.get(0);
-						currentAddr = addr.getPostalCode();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+				getResults(zipcodeText, searchText);
+			}
+		});
+	}
+	
+	private void getResults(String zipcodeText, String searchText) {
+		
+		Address addr = null;
+		if (!zipcodeText.isEmpty()) {
+			addr = getLocationFromAddress(zipcodeText);
+			currentAddr = zipcodeText;
+		} else {
+			Location location = getLocation();
+			Geocoder geocoder = new Geocoder(SearchActivity.this,
+					Locale.getDefault());
+			List<Address> addresses;
+			try {
+				addresses = geocoder.getFromLocation(
+						location.getLatitude(),
+						location.getLongitude(), 1);
+				addr = addresses.get(0);
+				currentAddr = addr.getPostalCode();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
-				}
-				ClientQuery query = new ClientQuery();
-				query.getProceduresByName(searchText, 25, addr.getLatitude(),
-						addr.getLongitude(), new GetResponseCallback() {
-							@Override
-							void onDataReceived(String response) {
-								parseProceduresFromResponse(response);
-								resultsAdapter.notifyDataSetChanged();
-							}
-						});
+		}
+		ClientQuery query = new ClientQuery();
+		query.getServicesByName(searchText, new GetResponseCallback() {
+			@Override
+			void onDataReceived(String response) {
+				parseProceduresFromResponse(response);
+				resultsAdapter.notifyDataSetChanged();
 			}
 		});
 	}
@@ -288,65 +360,68 @@ public class SearchActivity extends SherlockActivity {
 
 		return location;
 	}
-	
+
 	public ArrayList<String> autocomplete(String typedText) {
 		ArrayList<String> results = new ArrayList<String>();
-		for(String city : cities) {
-			if(city.toLowerCase().contains(typedText.toLowerCase())) {
+		for (String city : cities) {
+			if (city.toLowerCase().contains(typedText.toLowerCase())) {
 				String[] splitCity = city.split(",");
-				city = WordUtils.capitalize(splitCity[0].toLowerCase()) + "," + splitCity[1];
+				city = WordUtils.capitalize(splitCity[0].toLowerCase()) + ","
+						+ splitCity[1];
 				results.add(city);
 			}
-			if(results.size() == 10)
+			if (results.size() == 10)
 				break;
 		}
 		return results;
 	}
-	
-	private class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
-	    private ArrayList<String> resultList;
 
-	    public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
-	        super(context, textViewResourceId);
-	    }
+	private class PlacesAutoCompleteAdapter extends ArrayAdapter<String>
+			implements Filterable {
+		private ArrayList<String> resultList;
 
-	    @Override
-	    public int getCount() {
-	        return resultList.size();
-	    }
+		public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
+			super(context, textViewResourceId);
+		}
 
-	    @Override
-	    public String getItem(int index) {
-	        return resultList.get(index);
-	    }
+		@Override
+		public int getCount() {
+			return resultList.size();
+		}
 
-	    @Override
-	    public Filter getFilter() {
-	        Filter filter = new Filter() {
-	            @Override
-	            protected FilterResults performFiltering(CharSequence constraint) {
-	                FilterResults filterResults = new FilterResults();
-	                if (constraint != null) {
-	                    // Retrieve the autocomplete results.
-	                    resultList = autocomplete(constraint.toString());
+		@Override
+		public String getItem(int index) {
+			return resultList.get(index);
+		}
 
-	                    // Assign the data to the FilterResults
-	                    filterResults.values = resultList;
-	                    filterResults.count = resultList.size();
-	                }
-	                return filterResults;
-	            }
+		@Override
+		public Filter getFilter() {
+			Filter filter = new Filter() {
+				@Override
+				protected FilterResults performFiltering(CharSequence constraint) {
+					FilterResults filterResults = new FilterResults();
+					if (constraint != null) {
+						// Retrieve the autocomplete results.
+						resultList = autocomplete(constraint.toString());
 
-	            @Override
-	            protected void publishResults(CharSequence constraint, FilterResults results) {
-	                if (results != null && results.count > 0) {
-	                    notifyDataSetChanged();
-	                }
-	                else {
-	                    notifyDataSetInvalidated();
-	                }
-	            }};
-	        return filter;
-	    }
+						// Assign the data to the FilterResults
+						filterResults.values = resultList;
+						filterResults.count = resultList.size();
+					}
+					return filterResults;
+				}
+
+				@Override
+				protected void publishResults(CharSequence constraint,
+						FilterResults results) {
+					if (results != null && results.count > 0) {
+						notifyDataSetChanged();
+					} else {
+						notifyDataSetInvalidated();
+					}
+				}
+			};
+			return filter;
+		}
 	}
 }
