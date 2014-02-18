@@ -1,42 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-	android:orientation="vertical"
+	android:background="#000000"
     tools:context=".ReviewBillActivity" >
 
     <ImageView
         android:id="@+id/review_bill"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:contentDescription="@string/review_bill_image" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+       	android:contentDescription="@string/review_bill_image" />
     
-    <RelativeLayout 
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="9"
-        android:orientation="horizontal" >
+    <Button
+        android:id="@+id/retake_picture_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:text="@string/retake_picture_button"
+        android:onClick="retakePictureClick" />
 
-        <Button
-            android:id="@+id/retake_picture_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:text="@string/retake_picture_button"
-            android:onClick="retakePictureClick" />
+    <Button
+        android:id="@+id/upload_bill_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:text="@string/upload_bill_button"
+        android:onClick="uploadBillClick" />
 
-        <Button
-            android:id="@+id/upload_bill_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:text="@string/upload_bill_button"
-            android:onClick="uploadBillClick" />
-
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>

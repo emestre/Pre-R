@@ -3,13 +3,12 @@
 
     <string name="app_name">PreR</string>
     <string name="action_settings">Settings</string>
-    <string name="home_search_button">Search Procedure Cost</string>
-    <string name="home_camera_button">Camera Intent</string>
-    <string name="home_camera_button_api">Camera API</string>
-    <string name="image_button_description">Image button for taking a picture.</string>
-    <string name="capture_bill_title">Capture Bill</string>
+    <string name="home_search_button_text">Search for a Procedure</string>
+    <string name="home_camera_button_text">Upload a Bill</string>
+    <string name="help_button_description">Help button to provide tips for taking a picture of a bill.</string>
+    <string name="title_capture_bill">Capture Bill</string>
     <string name="review_bill_image">View to display bill image.</string>
-    <string name="review_bill_title">Review Bill</string>
+    <string name="title_review_bill">Review Bill</string>
     <string name="search_edittext_hint">Procedure Name / CPT Code</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="zipcode_edittext_hint">Near: Zip Code</string>
@@ -64,7 +63,7 @@
 
     <string name="incorrect_zip">Please enter a valid zip code</string>
     <string name="no_results">No Results Found</string>
-    <string name="capture_button">Capture</string>
+    <string name="capture_button_text">Capture</string>
     <string name="splash_logo_description">The PreR brand logo with application icon and slogan.</string>
     <string name="title_activity_procedure_results_list">ProcedureResultsList</string>
     <string name="sort_price">Sort by price</string>
@@ -76,7 +75,7 @@
     <string name="upload_success_message">Your bill has been successfully uploaded.</string>
     <string name="thank_you_message">Thank you for making health care healthier!</string>
     <string name="gohome_button">Home</string>
-    <string name="upload_another_button">Upload Another Bill</string>
-    <string name="upload_status_title">Upload Status</string>
+    <string name="upload_another_button">Upload Another Page</string>
+    <string name="title_uploaded_bill">Upload Status</string>
 
 </resources>
