@@ -24,21 +24,6 @@ public class ReviewBillActivity extends SherlockActivity {
         setContentView(R.layout.layout_review_bill);
         displayImage();
     }
-	
-	@Override
-	protected void onPause() {
-		super.onPause();
-		
-		// erase the image when this activity is finished
-		File image = new File(mPathToImage);
-		boolean success = image.delete();
-		if (success) {
-			Log.d(TAG, "image was successfully erased");
-		}
-		else {
-			Log.d(TAG, "image could not be erased");
-		}
-	}
     
     private void displayImage() {
     	
@@ -65,7 +50,22 @@ public class ReviewBillActivity extends SherlockActivity {
     }
     
     public void uploadBillClick(View view) {
-    	// TODO - upload the picture to the database before starting next activity
+    	RestClient client = new RestClient();
+    	Log.d("Image path", mPathToImage);
+    	client.postImage(mPathToImage, new PostCallback() {
+			@Override
+			public void onPostSuccess(String result) {
+				// erase the image after it's uploaded
+				File image = new File(mPathToImage);
+				boolean success = image.delete();
+				if (success) {
+					Log.d(TAG, "image was successfully erased");
+				}
+				else {
+					Log.d(TAG, "image could not be erased");
+				}			
+			}
+    	});
     	
     	// start the bill upload status activity
     	Intent intent = new Intent(this, UploadedBillActivity.class);

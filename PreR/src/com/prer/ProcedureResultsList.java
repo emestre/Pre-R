@@ -57,7 +57,7 @@ public class ProcedureResultsList extends Activity {
 			Address location = addresses.get(0);
 			
 			// Query server for nearest instances
-			ClientQuery query = new ClientQuery();
+			RestClient query = new RestClient();
 			query.getProceduresByName(procedureName, radius, 
 					location.getLatitude(), location.getLongitude(), 
 					new GetResponseCallback() {
