@@ -277,7 +277,7 @@ public class SearchActivity extends SherlockActivity {
 
 	private void getResultsByName(String zipcodeText, String searchText) {
 		setLocation(zipcodeText);
-		ClientQuery query = new ClientQuery();
+		RestClient query = new RestClient();
 		query.getServicesByName(searchText, new GetResponseCallback() {
 			@Override
 			void onDataReceived(String response) {
@@ -289,7 +289,7 @@ public class SearchActivity extends SherlockActivity {
 
 	private void getResultsByCode(String zipcodeText, String searchText) {
 		setLocation(zipcodeText);
-		ClientQuery query = new ClientQuery();
+		RestClient query = new RestClient();
 		query.getServicesByCptCode(searchText, new GetResponseCallback() {
 			@Override
 			void onDataReceived(String response) {
