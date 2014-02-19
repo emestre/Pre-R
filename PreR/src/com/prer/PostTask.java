@@ -12,7 +12,6 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
 import android.os.AsyncTask;
 
@@ -60,10 +59,8 @@ public class PostTask extends AsyncTask<String, String, String>{
 		}
 
 		try {
-			return EntityUtils.toString(response.getEntity());
+			return Integer.toString(response.getStatusLine().getStatusCode());
 		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;

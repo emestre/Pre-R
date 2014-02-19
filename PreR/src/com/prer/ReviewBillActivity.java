@@ -51,7 +51,6 @@ public class ReviewBillActivity extends SherlockActivity {
     
     public void uploadBillClick(View view) {
     	RestClient client = new RestClient();
-    	Log.d("Image path", mPathToImage);
     	client.postImage(mPathToImage, new PostCallback() {
 			@Override
 			public void onPostSuccess(String result) {
