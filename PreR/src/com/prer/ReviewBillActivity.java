@@ -2,7 +2,11 @@ package com.prer;
 
 import java.io.File;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,16 +20,22 @@ import android.widget.ImageView;
 public class ReviewBillActivity extends SherlockActivity {
 	
 	private static final String TAG = "ReviewBillActivity";
+	
 	private String mPathToImage;
 		
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_review_bill);
+        
+        // enable the home icon as an up button
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        
         displayImage();
     }
-    
-    private void displayImage() {
+	
+	private void displayImage() {
     	
     	// retrieve the file path from the intent
     	mPathToImage = (String) getIntent().getExtras().get(CameraActivity.KEY_IMAGE_PATH);
@@ -38,18 +48,44 @@ public class ReviewBillActivity extends SherlockActivity {
     	Bitmap rotatedImage = Bitmap.createBitmap(billImage, 0, 0, billImage.getWidth(), 
     						billImage.getHeight(), rotateMatrix, false);
     	
-        // set ImageView in XML to display the bill image
+        // set ImageView to display the bill image
         ImageView capturedBill = (ImageView) findViewById(R.id.review_bill);
         capturedBill.setImageBitmap(rotatedImage);
         capturedBill.setVisibility(View.VISIBLE);
     }
     
-    public void retakePictureClick(View view) {
-    	// kill the ReviewBillActivity, acts just like a back button press
-    	this.finish();
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = this.getSupportMenuInflater();
+		inflater.inflate(R.menu.menu_review_bill, menu);
+		
+		return true;
     }
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		switch(item.getItemId()) {
+		case android.R.id.home:
+			// simulate a back button press, kill this activity
+			finish();
+			break;
+			
+		case R.id.submenu_upload:
+			Log.d(TAG, "got the submenu upload click");
+			
+//			uploadBill();
+			break;
+			
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+
+		return true;
+	}
     
-    public void uploadBillClick(View view) {
+    public void uploadBill() {
+    	
     	RestClient client = new RestClient();
     	Log.d("Image path", mPathToImage);
     	client.postImage(mPathToImage, new PostCallback() {

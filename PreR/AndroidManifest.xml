@@ -49,6 +49,7 @@
         <activity
             android:name="com.prer.ReviewBillActivity"
             android:label="@string/title_review_bill"
+            android:logo="@drawable/ic_action_camera"
             android:screenOrientation="portrait" >
         </activity>
         

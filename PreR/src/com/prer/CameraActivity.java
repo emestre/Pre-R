@@ -7,29 +7,27 @@ import java.util.Date;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.PopupWindow;
 
 /** The activity that will display the camera preview. */
-public class CameraActivity extends Activity implements OnClickListener {
+public class CameraActivity extends Activity {
 
     private static final String TAG = "CameraActivity";
     protected static final String KEY_IMAGE_PATH = "image_path";
+    
 	private Camera mCamera;
     private CameraPreview mPreview;
-    
-    private PopupWindow mPopup;
+    private AlertDialog mHelpDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,20 +38,28 @@ public class CameraActivity extends Activity implements OnClickListener {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
         						WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        // link this activity to the camera preview XML file
+        // link this activity to the camera layout file
         this.setContentView(R.layout.layout_camera);
-        
-        // set the button click listeners
-        Button capture = (Button) this.findViewById(R.id.camera_capture_button);
-        capture.setOnClickListener(this);
-        ImageButton help = (ImageButton) this.findViewById(R.id.camera_help_button);
-        help.setOnClickListener(this);
         
         // create our Preview object
         mPreview = new CameraPreview(this);
         // set the preview object as the view of the FrameLayout
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
+        
+        // build the help dialog window
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Picture Tips");
+        builder.setMessage("Place the bill flat on a dark surface for best results. " +
+        				   "PreR will not store or use any personal information visible on your bill, " +
+        				   "however please cover any sensitive information you wish to not be seen.");
+        builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.dismiss();
+					}
+		});
+        // create the help window dialog
+        mHelpDialog = builder.create();
         
         // open the camera in onResume() so it can be properly released and re-opened
     }
@@ -99,38 +105,17 @@ public class CameraActivity extends Activity implements OnClickListener {
         return c;
     }
     
-	@Override
-	public void onClick(View v) {
-		
-		Log.d(TAG, "in the onClick method");
-		
-		switch (v.getId()) {
-		case R.id.camera_capture_button:
-			mCamera.takePicture(null, null, mPicture);
-	        Log.d(TAG, "picture taken");
-	        break;
-	     
-		case R.id.camera_help_button:
-//			mPopup.showAsDropDown(findViewById(R.id.camera_layout));
-			break;
-			
-		default:
-			if (mPopup != null && mPopup.isShowing())
-				mPopup.dismiss();
-			break;
-		}
-	}
+	/** Listener method for the help button. Displays a dialog with tips for taking a picture */
+    public void helpButtonClick(View view) {
+    	mHelpDialog.show();
+    }
     
-//    public void helpButtonClick(View view) {
-//    	
-//    }
-//    
-//    /** Listener method for the capture button. */
-//    public void captureClick(View view) {
-//    	// get an image from the camera
-//        mCamera.takePicture(null, null, mPicture);
-//        Log.d(TAG, "picture taken");
-//    }
+    /** Listener method for the capture button. Takes a snapshot of the camera preview. */
+    public void captureButtonClick(View view) {
+    	// get an image from the camera
+        mCamera.takePicture(null, null, mPicture);
+        Log.d(TAG, "picture taken");
+    }
     
     /** Callback to run when a picture has been taken. */
     private PictureCallback mPicture = new PictureCallback() {
@@ -160,12 +145,6 @@ public class CameraActivity extends Activity implements OnClickListener {
 //                Log.d(TAG, "Error accessing file: " + e.getMessage());
 //            }
 //            // end of code that saves the image to the SD card
-//            
-//            Intent intent = new Intent(getApplicationContext(), ReviewBillActivity.class);
-//            // add the file path to the intent and it send to ReviewBillActivity
-//            intent.putExtra("path", billImage.getAbsolutePath());
-//	        // start the ReviewBillActivity
-//            startActivity(intent);
         	
         	// get the time stamp for the image name
         	String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
