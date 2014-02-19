@@ -11,6 +11,8 @@
 # generated files
 PreR/bin/
 PreR/gen/
+actionbarsherlock/bin/
+actionbarsherlock/gen/
 
 # Ignore gradle files
 .gradle/
