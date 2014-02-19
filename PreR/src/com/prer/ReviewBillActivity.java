@@ -67,6 +67,8 @@ public class ReviewBillActivity extends SherlockActivity {
 		
 		switch(item.getItemId()) {
 		case android.R.id.home:
+			// user decided to re-take the picture
+			deleteImage();
 			// simulate a back button press, kill this activity
 			finish();
 			break;
@@ -74,7 +76,7 @@ public class ReviewBillActivity extends SherlockActivity {
 		case R.id.submenu_upload:
 			Log.d(TAG, "got the submenu upload click");
 			
-//			uploadBill();
+			uploadBill();
 			break;
 			
 		default:
@@ -83,23 +85,31 @@ public class ReviewBillActivity extends SherlockActivity {
 
 		return true;
 	}
+	
+	private void deleteImage() {
+		
+		File image = new File(mPathToImage);
+		boolean success = image.delete();
+		
+		if (success) {
+			Log.d(TAG, "image was successfully erased");
+		}
+		else {
+			Log.d(TAG, "image could not be erased");
+		}
+	}
     
-    public void uploadBill() {
+    private void uploadBill() {
     	
     	RestClient client = new RestClient();
     	Log.d("Image path", mPathToImage);
     	client.postImage(mPathToImage, new PostCallback() {
 			@Override
 			public void onPostSuccess(String result) {
-				// erase the image after it's uploaded
-				File image = new File(mPathToImage);
-				boolean success = image.delete();
-				if (success) {
-					Log.d(TAG, "image was successfully erased");
-				}
-				else {
-					Log.d(TAG, "image could not be erased");
-				}			
+				// check if the upload succeeded or not
+				Log.d(TAG, "result of upload: " + result);
+				
+				deleteImage();
 			}
     	});
     	
