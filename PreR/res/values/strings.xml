@@ -70,12 +70,14 @@
     <string name="sort_distance">Sort by distance</string>
     <string name="title_activity_procedure_information">Procedure Information</string>
     <string name="hospital_info">\n123 Fake St.\nSan Luis Obispo</string>
-    <string name="upload_bill_button">Upload</string>
+    <string name="upload_text">Upload</string>
     <string name="retake_picture_button">Retake</string>
     <string name="upload_success_message">Your bill has been successfully uploaded.</string>
     <string name="thank_you_message">Thank you for making health care healthier!</string>
     <string name="gohome_button">Home</string>
     <string name="upload_another_button">Upload Another Page</string>
     <string name="title_uploaded_bill">Upload Status</string>
+    <string name="capture_button_description">Button for taking a picture.</string>
+    <string name="submenu_upload_text">Upload to PreR</string>
 
 </resources>
