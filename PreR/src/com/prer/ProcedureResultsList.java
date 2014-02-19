@@ -96,11 +96,12 @@ public class ProcedureResultsList extends Activity {
 			procedure.setPrice("$" + obj.get("cost").getAsString());
 			procedure.setDistance(obj.get("distance").getAsString() + " miles");
 			hospital_name = WordUtils.capitalize(hospital.get("name").getAsString());
-			hospital_addr = hospital_name;
-			hospital_addr += "\n" + WordUtils.capitalize(hospital.get("street").getAsString()); 
+			hospital_addr = "\n" + WordUtils.capitalize(hospital.get("street").getAsString()); 
 			hospital_addr += "\n" + WordUtils.capitalize(hospital.get("city").getAsString()); 
 			hospital_addr +=  " " + hospital.get("zip_code").getAsString(); 
-			cpt_code= service.get("cpt_code").getAsString(); 
+			cpt_code = service.get("cpt_code").getAsString();
+			procedure.setHospitalPhone(hospital.get("phone_number").getAsString());
+			procedure.setHospitalWebsite(hospital.get("url").getAsString());
 			procedure.setHospitalName(hospital_name);
 			procedure.setHospital(hospital_addr);
 			procedure.setCptCode(cpt_code);
@@ -127,7 +128,10 @@ public class ProcedureResultsList extends Activity {
 				intent.putExtra("PRICE",  ((TextView) arg1
 						.findViewById(R.id.price_textView)).getText().toString());
 				Procedure procedure = ((ProcedureView)arg1).getProcedure();
-				intent.putExtra("HOSPITAL",  procedure.getHospital());
+				intent.putExtra("HOSPITAL_NAME",  procedure.getHospitalName());
+				intent.putExtra("HOSPITAL_ADDR",  procedure.getHospitalAddr());
+				intent.putExtra("HOSPITAL_PHONE", procedure.getHospitalPhoneNumber());
+				intent.putExtra("HOSPITAL_WEBSITE", procedure.getHospitalWebsite());
 				startActivity(intent);
 			}
 		});

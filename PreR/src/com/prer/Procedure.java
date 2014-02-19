@@ -7,15 +7,33 @@ public class Procedure {
 	public String name;
 	public String zipcode;
 	public String price;
-	public String hospital;
+	public String hospital_addr;
 	public String hospital_name;
 	public String distance;
 	public String cpt_code;
+	public String phone_number;
+	public String website;
 	private Map<String , Object> otherProperties = new HashMap<String , Object>();
 	
 	public Procedure(String name, String zipcode) {
 		this.name = name;
 		this.zipcode = zipcode;
+	}
+	
+	public void setHospitalPhone(String phone_number) {
+		this.phone_number = phone_number;
+	}
+	
+	public void setHospitalWebsite(String website) {
+		this.website = website;
+	}
+	
+	public String getHospitalWebsite() {
+		return website;
+	}
+
+	public String getHospitalPhoneNumber() {
+		return phone_number;
 	}
 
 	public void setName(String name) {
@@ -35,11 +53,11 @@ public class Procedure {
 	}
 
 	public void setHospital(String hospital) {
-		this.hospital = hospital;
+		this.hospital_addr = hospital;
 	}
 
-	public String getHospital() {
-		return hospital;
+	public String getHospitalAddr() {
+		return hospital_addr;
 	}
 	
 	public void setHospitalName(String hospital) {

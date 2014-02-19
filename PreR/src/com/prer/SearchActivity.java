@@ -9,16 +9,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
 import org.apache.commons.lang3.text.WordUtils;
-
 import com.actionbarsherlock.app.SherlockActivity;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.prer.ProcedureResultsList.PriceComparator;
-
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -44,28 +40,27 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//TODO Add CPT Code functionality
 //TODO Write a bunch of test cases
-//TODO Link results to the hospital view
 public class SearchActivity extends SherlockActivity {
 
 	private static final long MIN_TIME_BW_UPDATES = 30000;
 	private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 1000;
-	protected ArrayAdapter<String> resultsAdapter; // List adapter to display
-													// after search
-	protected ArrayList<String> filteredResults; // Procedures filtered by zip
-													// code and by name
-	protected ListView results_listView; // ListView containing search results
-	protected Button searchButton; // Search by zip code Button
-	protected EditText searchEditText; // Search by name EditText
+	protected ArrayAdapter<String> resultsAdapter;
+	protected ArrayList<String> filteredResults;
+	protected ListView results_listView;
+	protected Button searchButton;
+	protected EditText searchEditText;
 	protected AutoCompleteTextView addressEditText;
 	protected TextView noResultsView;
+	protected Button clearAddressButton;
 
 	private Context context;
 	private String currentAddr;
 	private LocationManager locationManager;
 
 	private ArrayList<String> cities;
+	private String lastSearch;
+	private int startFrom;
 
 	private final LocationListener mLocationListener = new LocationListener() {
 		@Override
@@ -84,36 +79,41 @@ public class SearchActivity extends SherlockActivity {
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 		}
 	};
+	private int endAt;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		context = getApplicationContext();
+
 		initLayout();
+
 		filteredResults = new ArrayList<String>();
 		resultsAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, filteredResults);
 
-		BufferedReader reader;
-		cities = new ArrayList<String>();
-		try {
-			reader = new BufferedReader(new InputStreamReader(getAssets().open(
-					"cities.txt")));
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				cities.add(line);
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		initListeners();
+		getCities();
+
 		AutoCompleteTextView autoCompView = (AutoCompleteTextView) findViewById(R.id.zip_code_edittext);
 		autoCompView.setAdapter(new PlacesAutoCompleteAdapter(this,
 				R.layout.list_item));
 
 		results_listView.setAdapter(resultsAdapter);
+	}
+
+	private void initListeners() {
+
+		clearAddressButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				addressEditText.setText("");
+			}
+
+		});
+
 		results_listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -129,13 +129,98 @@ public class SearchActivity extends SherlockActivity {
 
 		});
 
+		addressEditText.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				String zipcodeText = addressEditText.getText().toString();
+				setLocation(zipcodeText);
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+
+		});
+
+		searchEditText.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				String zipcodeText = addressEditText.getText().toString();
+				String searchText = searchEditText.getText().toString();
+				if (searchText.isEmpty()) {
+					filteredResults.clear();
+					resultsAdapter.notifyDataSetChanged();
+					noResultsView.setVisibility(View.GONE);
+					return;
+				}
+				if (isNumeric(searchText) && searchText.length() == 5) {
+					getResultsByCode(zipcodeText, searchText);
+				} else if (!isNumeric(searchText)) {
+					getResultsByName(zipcodeText, searchText);
+				} else {
+					filteredResults.clear();
+				}
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+
+		});
+
+		searchButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String zipcodeText = addressEditText.getText().toString();
+				String searchText = searchEditText.getText().toString();
+				if (searchText.isEmpty()) {
+					Toast.makeText(
+							SearchActivity.this,
+							"Please enter at least 1 character in the search field",
+							Toast.LENGTH_LONG).show();
+					return;
+				}
+				getResultsByName(zipcodeText, searchText);
+			}
+		});
 	}
 
-	public static boolean isNumeric(String str) {
+	private void getCities() {
+		BufferedReader reader;
+		cities = new ArrayList<String>();
+		try {
+			reader = new BufferedReader(new InputStreamReader(getAssets().open(
+					"cities.txt")));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				cities.add(line);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static boolean isNumeric(String str) {
 		return str.matches("-?\\d+(\\.\\d+)?");
 	}
 
-	protected Address getLocationFromAddress(String addr) {
+	private Address getLocationFromAddress(String addr) {
 
 		final Geocoder geocoder = new Geocoder(this);
 		try {
@@ -180,9 +265,9 @@ public class SearchActivity extends SherlockActivity {
 		JsonElement elem = new JsonParser().parse(response);
 		JsonObject obj = elem.getAsJsonObject();
 		JsonElement innerElem = obj.get("name");
-		if(innerElem == null) {
+		if (innerElem == null) {
 			noResultsView.setVisibility(View.VISIBLE);
-			return; 
+			return;
 		}
 		String name = innerElem.getAsString();
 
@@ -192,87 +277,21 @@ public class SearchActivity extends SherlockActivity {
 	}
 
 	protected void initLayout() {
-		setContentView(R.layout.main_search_layout); // Sets layout
-		results_listView = (ListView) findViewById(R.id.results_list); // Initializes
-																		// View
-																		// fields
+		setContentView(R.layout.main_search_layout);
+
+		results_listView = (ListView) findViewById(R.id.results_list);
 		searchButton = (Button) findViewById(R.id.search_button);
 		searchEditText = (EditText) findViewById(R.id.search_edittext);
 		addressEditText = (AutoCompleteTextView) findViewById(R.id.zip_code_edittext);
 		noResultsView = (TextView) findViewById(R.id.no_results_view);
+		clearAddressButton = (Button) findViewById(R.id.clear_address_button);
 		addressEditText.setThreshold(1);
+
 		Location loc = getLocation();
-		if (loc != null)
+		if (loc != null) {
 			addressEditText.setHint("Using default location");
-
-		addressEditText.addTextChangedListener(new TextWatcher() {
-
-			@Override
-			public void afterTextChanged(Editable s) {
-				String zipcodeText = addressEditText.getText().toString();
-				setLocation(zipcodeText);
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-			}
-
-		});
-
-		searchEditText.addTextChangedListener(new TextWatcher() {
-			@Override
-			public void afterTextChanged(Editable arg0) {
-				String zipcodeText = addressEditText.getText().toString();
-				String searchText = searchEditText.getText().toString();
-				if (searchText.isEmpty()) {
-					filteredResults.clear();
-					resultsAdapter.notifyDataSetChanged();
-					noResultsView.setVisibility(View.GONE);
-					return;
-				}
-				if (isNumeric(searchText) && searchText.length() == 5) {
-					getResultsByCode(zipcodeText, searchText);
-				} else if(!isNumeric(searchText)) {
-					getResultsByName(zipcodeText, searchText);
-				} else {
-					filteredResults.clear();
-				}
-
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-			}
-
-		});
-
-		searchButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				String zipcodeText = addressEditText.getText().toString();
-				String searchText = searchEditText.getText().toString();
-				if (searchText.isEmpty()) {
-					Toast.makeText(
-							SearchActivity.this,
-							"Please enter at least 1 character in the search field",
-							Toast.LENGTH_LONG).show();
-					return;
-				}
-				getResultsByName(zipcodeText, searchText);
-			}
-		});
+			searchEditText.requestFocus();
+		}
 	}
 
 	private void getResultsByName(String zipcodeText, String searchText) {
@@ -321,7 +340,7 @@ public class SearchActivity extends SherlockActivity {
 		}
 	}
 
-	public Location getLocation() {
+	private Location getLocation() {
 		Location location = null;
 		try {
 			locationManager = (LocationManager) getApplicationContext()
@@ -335,43 +354,25 @@ public class SearchActivity extends SherlockActivity {
 			boolean isNetworkEnabled = locationManager
 					.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-			if (!isGPSEnabled && !isNetworkEnabled) {
-				// no network provider is enabled
-			} else {
-				double latitude;
-				double longitude;
-				if (isNetworkEnabled) {
+			if (isNetworkEnabled) {
+				locationManager.requestLocationUpdates(
+						LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES,
+						MIN_DISTANCE_CHANGE_FOR_UPDATES, mLocationListener);
+				Log.d("Network", "Network Enabled");
+				if (locationManager != null) {
+					location = locationManager
+							.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+				}
+			}
+			if (isGPSEnabled) {
+				if (location == null) {
 					locationManager.requestLocationUpdates(
-							LocationManager.NETWORK_PROVIDER,
-							MIN_TIME_BW_UPDATES,
+							LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
 							MIN_DISTANCE_CHANGE_FOR_UPDATES, mLocationListener);
-					Log.d("Network", "Network Enabled");
+					Log.d("GPS", "GPS Enabled");
 					if (locationManager != null) {
 						location = locationManager
-								.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-						if (location != null) {
-							latitude = location.getLatitude();
-							longitude = location.getLongitude();
-						}
-					}
-				}
-				// if GPS Enabled get lat/long using GPS Services
-				if (isGPSEnabled) {
-					if (location == null) {
-						locationManager.requestLocationUpdates(
-								LocationManager.GPS_PROVIDER,
-								MIN_TIME_BW_UPDATES,
-								MIN_DISTANCE_CHANGE_FOR_UPDATES,
-								mLocationListener);
-						Log.d("GPS", "GPS Enabled");
-						if (locationManager != null) {
-							location = locationManager
-									.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-							if (location != null) {
-								latitude = location.getLatitude();
-								longitude = location.getLongitude();
-							}
-						}
+								.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 					}
 				}
 			}
@@ -383,18 +384,30 @@ public class SearchActivity extends SherlockActivity {
 		return location;
 	}
 
-	public ArrayList<String> autocomplete(String typedText) {
+	private ArrayList<String> autocomplete(String typedText) {
 		ArrayList<String> results = new ArrayList<String>();
-		for (String city : cities) {
-			if (city.toLowerCase().contains(typedText.toLowerCase())) {
+		String oldText = typedText.substring(0, typedText.length() - 1);
+		int start = 0;
+		int end = cities.size();
+		if (oldText.equals(lastSearch)) {
+			start = startFrom;
+			end = endAt + 1;
+		}
+
+		for (int i = start; i < end; i++) {
+			String city = cities.get(i);
+			if (city.toLowerCase().startsWith(typedText.toLowerCase())) {
 				String[] splitCity = city.split(",");
 				city = WordUtils.capitalize(splitCity[0].toLowerCase()) + ","
 						+ splitCity[1];
 				results.add(city);
 			}
-			if (results.size() == 10)
-				break;
+
 		}
+
+		lastSearch = typedText;
+		startFrom = cities.indexOf(results.get(0).toUpperCase());
+		endAt = cities.indexOf(results.get(results.size() - 1).toUpperCase());
 		return results;
 	}
 

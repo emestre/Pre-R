@@ -19,7 +19,12 @@ public class ProcedureInformation extends SherlockActivity {
 	protected Button hospitalPhone;
 	protected Button hospitalDirections;
 	protected Button hospitalWebsite;
-
+	
+	private String hospitalName;
+	private String hospitalAddr;
+	private String hospitalPhoneNumber;
+	private String hospitalWebsiteUrl;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,12 +40,17 @@ public class ProcedureInformation extends SherlockActivity {
 		
 		procedureNameView.setText(getIntent().getExtras().getString("PROCEDURE"));
 		procedurePriceView.setText(getIntent().getExtras().getString("PRICE"));
-		procedureHospitalView.setText(getIntent().getExtras().getString("HOSPITAL"));
+		
+		hospitalName = getIntent().getExtras().getString("HOSPITAL_NAME");
+		hospitalAddr = getIntent().getExtras().getString("HOSPITAL_ADDR");
+		hospitalPhoneNumber = getIntent().getExtras().getString("HOSPITAL_PHONE");
+		hospitalWebsiteUrl =  getIntent().getExtras().getString("HOSPITAL_WEBSITE");
+		procedureHospitalView.setText(hospitalName + hospitalAddr);
 		
 
 		hospitalPhone.setText("Call Number");
 		hospitalDirections.setText("Get Directions");
-		hospitalWebsite.setText("Search for Website");
+		hospitalWebsite.setText("Navigate to Website");
 
 		initListeners();
 	}
@@ -73,7 +83,7 @@ public class ProcedureInformation extends SherlockActivity {
 			
 			@Override
 			public void onClick(View v) {
-				Uri uri = Uri.parse("tel:0123456789");
+				Uri uri = Uri.parse("tel:" + hospitalPhoneNumber);
 				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 				startActivity(intent);
 			}
@@ -83,7 +93,7 @@ public class ProcedureInformation extends SherlockActivity {
 			
 			@Override
 			public void onClick(View v) {
-				Uri uri = Uri.parse("geo:0,0?q=1+Grand+Ave+San+Luis+Obispo");
+				Uri uri = Uri.parse("geo:0,0?q=" + hospitalAddr);
 				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 				startActivity(intent);
 			}
@@ -93,7 +103,7 @@ public class ProcedureInformation extends SherlockActivity {
 			
 			@Override
 			public void onClick(View v) {
-				Uri uri = Uri.parse("http://google.com/#q=Hospital");
+				Uri uri = Uri.parse(hospitalWebsiteUrl);
 				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 				startActivity(intent);
 			}
