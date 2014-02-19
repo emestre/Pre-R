@@ -50,9 +50,9 @@ public class CameraActivity extends Activity {
         // build the help dialog window
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Picture Tips");
-        builder.setMessage("Place the bill flat on a dark surface for best results. " +
+        builder.setMessage("Place the bill flat on a dark surface for best results.\n" +
         				   "PreR will not store or use any personal information visible on your bill, " +
-        				   "however please cover any sensitive information you wish to not be seen.");
+        				   "however please cover any sensitive information you wish not to be seen.");
         builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						dialog.dismiss();
