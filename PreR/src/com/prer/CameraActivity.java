@@ -15,9 +15,11 @@ import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 /** The activity that will display the camera preview. */
 public class CameraActivity extends Activity {
@@ -54,9 +56,9 @@ public class CameraActivity extends Activity {
         				   "PreR will not store or use any personal information visible on your bill, " +
         				   "however please cover any sensitive information you wish not to be seen.");
         builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int id) {
-						dialog.dismiss();
-					}
+        	public void onClick(DialogInterface dialog,int id) {
+        		dialog.dismiss();
+        	}
 		});
         // create the help window dialog
         mHelpDialog = builder.create();
@@ -70,8 +72,20 @@ public class CameraActivity extends Activity {
         
         mCamera = getCameraInstance();
         mPreview.setCamera(mCamera);
-        
         Log.d(TAG, "new camera instance has been created");
+        
+        // set the event listener for the capture button after we opened the camera
+        ImageButton capture = (ImageButton) findViewById(R.id.camera_capture_button);
+        capture.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				// get an image from the camera
+		        mCamera.takePicture(null, null, mPicture);
+		        Log.d(TAG, "picture taken");
+			}
+        	
+        });
     }
     
     @Override
@@ -110,41 +124,11 @@ public class CameraActivity extends Activity {
     	mHelpDialog.show();
     }
     
-    /** Listener method for the capture button. Takes a snapshot of the camera preview. */
-    public void captureButtonClick(View view) {
-    	// get an image from the camera
-        mCamera.takePicture(null, null, mPicture);
-        Log.d(TAG, "picture taken");
-    }
-    
     /** Callback to run when a picture has been taken. */
     private PictureCallback mPicture = new PictureCallback() {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-        	
-//        	// create a file for the image to be saved as
-//            File billImage = MediaFileHelper.getOutputMediaFile(
-//            		  			MediaFileHelper.MEDIA_TYPE_IMAGE);
-//            
-//            // code that saves the image to the SD card
-//            if (billImage == null) {
-//                Log.d(TAG, "Error creating media file, check storage permissions: ");
-//                return;
-//            }
-//            
-//            try {
-//                FileOutputStream fos = new FileOutputStream(billImage);
-//                fos.write(data);
-//                fos.close();
-//            }
-//            catch (FileNotFoundException e) {
-//                Log.d(TAG, "File not found: " + e.getMessage());
-//            }
-//            catch (IOException e) {
-//                Log.d(TAG, "Error accessing file: " + e.getMessage());
-//            }
-//            // end of code that saves the image to the SD card
         	
         	// get the time stamp for the image name
         	String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());

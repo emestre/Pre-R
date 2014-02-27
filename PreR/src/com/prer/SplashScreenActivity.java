@@ -35,4 +35,9 @@ public class SplashScreenActivity extends Activity {
             }
         }, SPLASH_DISPLAY_TIME);
     }
+    
+    @Override
+    public void onBackPressed() {
+    	// do nothing
+    }
 }

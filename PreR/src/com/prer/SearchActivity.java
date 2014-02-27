@@ -364,7 +364,7 @@ public class SearchActivity extends SherlockActivity {
 							.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 				}
 			}
-			if (isGPSEnabled) {
+		if (isGPSEnabled) {
 				if (location == null) {
 					locationManager.requestLocationUpdates(
 							LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
