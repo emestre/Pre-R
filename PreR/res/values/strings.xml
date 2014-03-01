@@ -11,7 +11,7 @@
     <string name="title_review_bill">Review Bill</string>
     <string name="search_edittext_hint">Procedure Name / CPT Code</string>
     <string name="title_activity_search">Search Procedures</string>
-    <string name="zipcode_edittext_hint">Near: Zip Code</string>
+    <string name="zipcode_edittext_hint">Near: Zip Code, City, ...</string>
     <string name="search_button_text">Go</string>
 
     <string-array name="procedure_list">

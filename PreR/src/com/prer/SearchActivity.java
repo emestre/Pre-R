@@ -2,27 +2,24 @@ package com.prer;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
 import org.apache.commons.lang3.text.WordUtils;
-import com.actionbarsherlock.app.SherlockActivity;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
+import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.content.Context;
-import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -40,7 +37,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//TODO Write a bunch of test cases
+import com.actionbarsherlock.app.SherlockActivity;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 public class SearchActivity extends SherlockActivity {
 
 	private static final long MIN_TIME_BW_UPDATES = 30000;
@@ -61,6 +63,8 @@ public class SearchActivity extends SherlockActivity {
 	private ArrayList<String> cities;
 	private String lastSearch;
 	private int startFrom;
+	
+	private Toast toast;
 
 	private final LocationListener mLocationListener = new LocationListener() {
 		@Override
@@ -101,6 +105,8 @@ public class SearchActivity extends SherlockActivity {
 				R.layout.list_item));
 
 		results_listView.setAdapter(resultsAdapter);
+		
+		toast = new Toast(context);
 	}
 
 	private void initListeners() {
@@ -134,7 +140,13 @@ public class SearchActivity extends SherlockActivity {
 			@Override
 			public void afterTextChanged(Editable s) {
 				String zipcodeText = addressEditText.getText().toString();
-				setLocation(zipcodeText);
+				if(!isOnline()) {
+					showToast("Please enable a network connection on your device");
+				//	addressEditText.setText("");
+					return;
+				}
+				if(!zipcodeText.isEmpty())
+					setLocation(zipcodeText);
 			}
 
 			@Override
@@ -160,7 +172,14 @@ public class SearchActivity extends SherlockActivity {
 					noResultsView.setVisibility(View.GONE);
 					return;
 				}
-				if (isNumeric(searchText) && searchText.length() == 5) {
+				if(!isOnline()) {
+					showToast("Please enable a network connection on your device");
+					return;
+				}
+				if(zipcodeText.isEmpty() && getLocation() == null) {
+					showToast("Please enter a location to search, or enable your GPS to use your current location");
+					searchEditText.setText("");
+				} else if (isNumeric(searchText) && searchText.length() == 5) {
 					getResultsByCode(zipcodeText, searchText);
 				} else if (!isNumeric(searchText)) {
 					getResultsByName(zipcodeText, searchText);
@@ -198,6 +217,27 @@ public class SearchActivity extends SherlockActivity {
 			}
 		});
 	}
+	
+	private boolean isOnline() {
+	    ConnectivityManager cm =
+	        (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+	    if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+	        return true;
+	    }
+	    return false;
+	}
+	
+	private void showToast(String msg) {
+        try{ 
+        	if(toast.getView().isShown())    
+        		return;
+        } catch (Exception e) {         
+            
+        }
+        toast = Toast.makeText(SearchActivity.this, msg, Toast.LENGTH_LONG);
+        toast.show();  //finally display it
+    }
 
 	private void getCities() {
 		BufferedReader reader;

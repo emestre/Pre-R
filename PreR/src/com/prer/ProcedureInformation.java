@@ -70,7 +70,10 @@ public class ProcedureInformation extends SherlockActivity {
 		{
 		case R.id.procedure_information_home_button:
 			Intent intent = new Intent(this, HomeScreenActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); 
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(intent);
+			finish();
 			return true;
 			
 		default:
