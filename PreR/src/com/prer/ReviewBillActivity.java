@@ -3,6 +3,9 @@ package com.prer;
 import java.io.File;
 import java.io.IOException;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,7 +15,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -24,9 +26,10 @@ public class ReviewBillActivity extends SherlockActivity {
 	
 	private static final String TAG = "ReviewBillActivity";
 	private static final int UPLOAD_SUCCESS = 201;
-	private static final int UPLOAD_ERROR = 400;
 	
 	private String mPathToImage;
+	private ProgressDialog mUploadingProgress;
+	private AlertDialog mUploadStatusAlert;
 		
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,25 @@ public class ReviewBillActivity extends SherlockActivity {
         
         displayImage();
     }
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		
+		// delete the image from internal storage on exit
+		deleteImage();
+	}
+	
+	private void deleteImage() {
+		
+		File image = new File(mPathToImage);
+		boolean success = image.delete();
+		
+		if (success)
+			Log.d(TAG, "image was successfully erased");
+		else
+			Log.d(TAG, "image could not be erased");
+	}
 	
 	private void displayImage() {
     	
@@ -105,14 +127,11 @@ public class ReviewBillActivity extends SherlockActivity {
 		switch(item.getItemId()) {
 		case android.R.id.home:
 			// user decided to re-take the picture
-			deleteImage();
 			// simulate a back button press, kill this activity
 			finish();
 			break;
 			
 		case R.id.submenu_upload:
-			Log.d(TAG, "got the submenu upload click");
-			
 			uploadBill();
 			break;
 			
@@ -122,19 +141,6 @@ public class ReviewBillActivity extends SherlockActivity {
 
 		return true;
 	}
-	
-	private void deleteImage() {
-		
-		File image = new File(mPathToImage);
-		boolean success = image.delete();
-		
-		if (success) {
-			Log.d(TAG, "image was successfully erased");
-		}
-		else {
-			Log.d(TAG, "image could not be erased");
-		}
-	}
     
     private void uploadBill() {
     	
@@ -142,28 +148,125 @@ public class ReviewBillActivity extends SherlockActivity {
     	client.postImage(mPathToImage, new PostCallback() {
 			@Override
 			public void onPostSuccess(String result) {
-				String toastText = "";
+				
+				// dismiss the progress dialog
+				mUploadingProgress.dismiss();
 				
 				// check if the upload succeeded or not
 				switch (Integer.parseInt(result)) {
 				case UPLOAD_SUCCESS:
-					toastText = "Upload succeeded";
+					Log.d(TAG, "uploading the image SUCCEEDED");
+					
+					// building the upload succeed alert window
+					mUploadStatusAlert = buildSuccessDialog();
+			        
 					break;
 				
-				case UPLOAD_ERROR:
-					toastText = "Upload failed";
+				default:
+					Log.d(TAG, "uploading the image FAILED");
+					
+			        // building the upload failed alert window
+					mUploadStatusAlert = buildFailedDialog();
+			        
 					break;
 				}
 				
-				Toast toast = Toast.makeText(ReviewBillActivity.this, toastText, Toast.LENGTH_SHORT);
-		    	toast.show();
-				
-				deleteImage();
+				// show the upload status alert dialog
+				mUploadStatusAlert.show();
 			}
     	});
     	
-    	// start the bill upload status activity
-    	Intent intent = new Intent(this, UploadedBillActivity.class);
-    	startActivity(intent);
+    	// display a loading spinner while the bill is uploading
+    	mUploadingProgress = new ProgressDialog(this);
+    	mUploadingProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+    	mUploadingProgress.setTitle("Uploading...");
+    	mUploadingProgress.setMessage("Your bill is being uploaded to PreR.");
+    	mUploadingProgress.setIndeterminate(true);
+    	mUploadingProgress.setCancelable(true);
+    	mUploadingProgress.show();
+    	
+//    	new CountDownTimer(5000, 2000) {
+//    		private boolean test = true;
+//
+//			@Override
+//			public void onFinish() {
+//				uploading.dismiss();
+//				if (test)
+//					mSuccess.show();
+//				else
+//					mFailed.show();
+//			}
+//
+//			@Override
+//			public void onTick(long millisUntilFinished) {
+//				// no updates from timer
+//				test = !test;
+//			}
+//    	}.start();
+    }
+    
+    private AlertDialog buildSuccessDialog() {
+    	
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Upload Succeeded");
+        builder.setMessage("Your bill was successfully uploaded to PreR.\n" +
+        				   "Thank you for making health care healthier!");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Upload New Page", new DialogInterface.OnClickListener() {
+        	
+        	@Override
+        	public void onClick(DialogInterface dialog, int which) {
+        		dialog.dismiss();
+        		
+        		Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
+        		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        		startActivity(intent);
+        	}
+		});
+        builder.setNegativeButton("Home", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				
+				Intent intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
+				// clear the back stack so user effectively "restarts" application
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+			}
+		});
+        
+        return builder.create();
+    }
+    
+    private AlertDialog buildFailedDialog() {
+    	
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Upload Failed");
+        builder.setMessage("Sorry, there was an error with your upload. " +
+        				   "Google's servers are overloaded right now.");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
+        	
+        	@Override
+        	public void onClick(DialogInterface dialog, int which) {
+        		dialog.dismiss();
+        		uploadBill();
+        	}
+		});
+        builder.setNegativeButton("Home", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				
+				Intent intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
+				// clear the back stack so user effectively "restarts" application
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+			}
+		});
+        
+        return builder.create();
     }
 }
