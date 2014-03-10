@@ -5,18 +5,21 @@ import java.io.IOException;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -34,11 +37,7 @@ public class ReviewBillActivity extends SherlockActivity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_review_bill);
-        
-        // enable the home icon as an up button
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        setContentView(R.layout.activity_review_bill);
         
         displayImage();
     }
@@ -57,9 +56,9 @@ public class ReviewBillActivity extends SherlockActivity {
 		boolean success = image.delete();
 		
 		if (success)
-			Log.d(TAG, "image was successfully erased");
+			Log.d(TAG, "deleting image...SUCCESS");
 		else
-			Log.d(TAG, "image could not be erased");
+			Log.d(TAG, "deleting image...FAILED");
 	}
 	
 	private void displayImage() {
@@ -116,7 +115,7 @@ public class ReviewBillActivity extends SherlockActivity {
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = this.getSupportMenuInflater();
-		inflater.inflate(R.menu.menu_review_bill, menu);
+		inflater.inflate(R.menu.review_bill, menu);
 		
 		return true;
     }
@@ -125,14 +124,20 @@ public class ReviewBillActivity extends SherlockActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		
 		switch(item.getItemId()) {
-		case android.R.id.home:
+		case R.id.menu_retake:
 			// user decided to re-take the picture
 			// simulate a back button press, kill this activity
 			finish();
 			break;
 			
-		case R.id.submenu_upload:
-			uploadBill();
+		case R.id.menu_upload:
+			if (isNetworkOnline()) {
+				uploadBill();
+			}
+			else {
+				Toast.makeText(this, "You need a network connection to upload", Toast.LENGTH_SHORT).show();
+			}
+			
 			break;
 			
 		default:
@@ -141,6 +146,30 @@ public class ReviewBillActivity extends SherlockActivity {
 
 		return true;
 	}
+	
+	public boolean isNetworkOnline() {
+		boolean status=false;
+		try {
+			ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo netInfo = cm.getNetworkInfo(0);
+			
+			if (netInfo != null && netInfo.getState()==NetworkInfo.State.CONNECTED) {
+				status= true;
+			}
+			else {
+				netInfo = cm.getNetworkInfo(1);
+				
+				if (netInfo!=null && netInfo.getState()==NetworkInfo.State.CONNECTED)
+					status= true;
+			}
+		}
+		catch(Exception e)  {
+			e.printStackTrace();  
+			return false;
+		}
+		
+		return status;
+	} 
     
     private void uploadBill() {
     	
@@ -159,7 +188,6 @@ public class ReviewBillActivity extends SherlockActivity {
 					
 					// building the upload succeed alert window
 					mUploadStatusAlert = buildSuccessDialog();
-			        
 					break;
 				
 				default:
@@ -167,7 +195,6 @@ public class ReviewBillActivity extends SherlockActivity {
 					
 			        // building the upload failed alert window
 					mUploadStatusAlert = buildFailedDialog();
-			        
 					break;
 				}
 				
@@ -184,33 +211,13 @@ public class ReviewBillActivity extends SherlockActivity {
     	mUploadingProgress.setIndeterminate(true);
     	mUploadingProgress.setCancelable(true);
     	mUploadingProgress.show();
-    	
-//    	new CountDownTimer(5000, 2000) {
-//    		private boolean test = true;
-//
-//			@Override
-//			public void onFinish() {
-//				uploading.dismiss();
-//				if (test)
-//					mSuccess.show();
-//				else
-//					mFailed.show();
-//			}
-//
-//			@Override
-//			public void onTick(long millisUntilFinished) {
-//				// no updates from timer
-//				test = !test;
-//			}
-//    	}.start();
     }
     
     private AlertDialog buildSuccessDialog() {
     	
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Upload Succeeded");
-        builder.setMessage("Your bill was successfully uploaded to PreR.\n" +
-        				   "Thank you for making health care healthier!");
+        builder.setMessage("Thank you for making health care healthier!");
         builder.setCancelable(false);
         builder.setPositiveButton("Upload New Page", new DialogInterface.OnClickListener() {
         	
@@ -243,8 +250,7 @@ public class ReviewBillActivity extends SherlockActivity {
     	
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Upload Failed");
-        builder.setMessage("Sorry, there was an error with your upload. " +
-        				   "Google's servers are overloaded right now.");
+        builder.setMessage("Sorry, there was an problem with your upload.");
         builder.setCancelable(false);
         builder.setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
         	

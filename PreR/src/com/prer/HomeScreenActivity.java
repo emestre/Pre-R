@@ -17,19 +17,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 public class HomeScreenActivity extends SherlockActivity {
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_homescreen);
+        setContentView(R.layout.activity_homescreen);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getSupportMenuInflater().inflate(R.menu.menu_homescreen, menu);
+        getSupportMenuInflater().inflate(R.menu.homescreen, menu);
         return true;
     }
     
@@ -48,7 +49,7 @@ public class HomeScreenActivity extends SherlockActivity {
     	}
     	else {
     		// device has no camera
-    		// TODO - notify user somehow
+    		Toast.makeText(this, "Your device does not have a camera", Toast.LENGTH_SHORT).show();
     	}
     }
     

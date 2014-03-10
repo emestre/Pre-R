@@ -15,9 +15,8 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:allowBackup="true"
@@ -49,7 +48,6 @@
         <activity
             android:name="com.prer.ReviewBillActivity"
             android:label="@string/title_review_bill"
-            android:logo="@drawable/ic_action_camera"
             android:screenOrientation="portrait" >
         </activity>
         
