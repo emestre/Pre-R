@@ -88,5 +88,6 @@
     <string name="start_searching">Start searching procedures now!</string>
     <string name="intro_btn_text">Next</string>
     <string name="intro_final_btn_text">Let\'s get started!</string>
+    <string name="help_checkbox_text">Don\'t show this on camera start</string>
 
 </resources>
