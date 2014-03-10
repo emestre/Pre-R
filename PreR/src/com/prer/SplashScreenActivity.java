@@ -29,7 +29,7 @@ public class SplashScreenActivity extends Activity {
             @Override
             public void run() {
                 /* Create an Intent that will start the HomeScreenActivity */
-                Intent intent = new Intent(SplashScreenActivity.this, HomeScreenActivity.class);
+                Intent intent = new Intent(SplashScreenActivity.this, FirstUseActivity.class);
                 startActivity(intent);
                 finish();
             }

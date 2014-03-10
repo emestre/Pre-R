@@ -79,6 +79,14 @@
     <string name="title_uploaded_bill">Upload Status</string>
     <string name="capture_button_description">Button for taking a picture.</string>
     <string name="submenu_upload_text">Upload to PreR</string>
-    <string name="help_checkbox_text">Don\'t show on camera start</string>
+    <string name="title_activity_first_use">FirstUseActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="welcome">Welcome to PreR!\nThank you for helping make health care healthier!</string>
+    <string name="search_tut">PreR offers features to search and add medical prices around you.\nHere\'s how you would search for prices:\n\nFirst, select "Search for a Procedure"</string>
+    <string name="search_tut2">Next, enter your location in the address text field. If you are using location services, you can leave that field blank to use your default location.\nThen, enter a query in the procedure search field. Results should automatically be populated in a dynamic list you can choose from.</string>
+   	<string name="search_tut3">After selecting a procedure from the search result, you can view its information:</string>
+    <string name="start_searching">Start searching procedures now!</string>
+    <string name="intro_btn_text">Next</string>
+    <string name="intro_final_btn_text">Let\'s get started!</string>
 
 </resources>
