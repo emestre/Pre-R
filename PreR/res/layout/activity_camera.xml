@@ -25,7 +25,7 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/capture_button_background"
         android:src="@drawable/ic_action_camera"
-        android:onClick="captureButtonClick" />
+        android:enabled="false" />
     
     <ImageButton
         android:id="@+id/camera_help_button"

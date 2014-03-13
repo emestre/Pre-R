@@ -10,24 +10,43 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 /** The activity that will display the camera preview. */
 public class CameraActivity extends Activity {
 
     private static final String TAG = "CameraActivity";
     protected static final String KEY_IMAGE_PATH = "image_path";
+    private static final String HELP_KEY = "help preference";
     
 	private Camera mCamera;
+	private boolean isFocusing = false;
     private CameraPreview mPreview;
+    
+    private FrameLayout mPreviewFrame;
+    private ImageButton mCaptureButton;
     private AlertDialog mHelpDialog;
+    
+    private boolean mShowHelp;
+    private SharedPreferences mHelpPreference;
+    private Editor mEditor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,29 +58,84 @@ public class CameraActivity extends Activity {
         						WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // link this activity to the camera layout file
-        this.setContentView(R.layout.layout_camera);
+        this.setContentView(R.layout.activity_camera);
         
-        // create our Preview object
+        mHelpPreference = this.getSharedPreferences(HELP_KEY, MODE_PRIVATE);
+        mShowHelp = mHelpPreference.getBoolean("help", true);
+        mEditor = mHelpPreference.edit();
+        
+        initPreview();
+        initLayout();
+        
+        if (mShowHelp)
+        	mHelpDialog.show();
+        
+        // open the camera in onResume() so it can be properly released and re-opened
+    }
+    
+    private void initPreview() {
+    	// create our Preview object
         mPreview = new CameraPreview(this);
-        // set the preview object as the view of the FrameLayout
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(mPreview);
-        
-        // build the help dialog window
+        mPreviewFrame = (FrameLayout) findViewById(R.id.camera_preview);
+        mPreviewFrame.setOnTouchListener(new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					handleTouchToFocus();
+				}
+                return true;
+			}
+        });
+    }
+    
+    private void initLayout() {
+    	View checkBoxView = View.inflate(this, R.layout.help_dialog, null);
+    	CheckBox checkBox = (CheckBox) checkBoxView.findViewById(R.id.help_checkbox);
+    	checkBox.setChecked(!mShowHelp);
+    	checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				mShowHelp = !isChecked;
+				mEditor.clear();
+				mEditor.putBoolean("help", !isChecked);
+				mEditor.commit();
+			}
+    		
+    	});
+    	if (Build.VERSION.SDK_INT == Build.VERSION_CODES.GINGERBREAD_MR1)
+    		checkBox.setTextColor(Color.WHITE);
+    	
+    	// build the help dialog window
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Picture Tips");
-        builder.setMessage("Place the bill flat on a dark surface for best results.\n" +
+        builder.setMessage("Touch to focus.\nPlace the bill flat on a dark surface for best results.\n" +
         				   "PreR will not store or use any personal information visible on your bill, " +
         				   "however please cover any sensitive information you wish not to be seen.");
         builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int id) {
-						dialog.dismiss();
-					}
+        	public void onClick(DialogInterface dialog,int id) {
+        		dialog.dismiss();
+        	}
 		});
+        builder.setView(checkBoxView);
         // create the help window dialog
         mHelpDialog = builder.create();
         
-        // open the camera in onResume() so it can be properly released and re-opened
+        // set the event listener for the capture button after we opened the camera
+        mCaptureButton = (ImageButton) findViewById(R.id.camera_capture_button);
+        mCaptureButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				mCaptureButton.setEnabled(false);
+				
+				// get an image from the camera
+		        mCamera.takePicture(null, null, mPicture);
+		        Log.d(TAG, "picture taken");
+			}
+        	
+        });
     }
     
     @Override
@@ -70,8 +144,10 @@ public class CameraActivity extends Activity {
         
         mCamera = getCameraInstance();
         mPreview.setCamera(mCamera);
-        
         Log.d(TAG, "new camera instance has been created");
+        mPreviewFrame.addView(mPreview);
+        
+        mCaptureButton.setEnabled(true);
     }
     
     @Override
@@ -83,9 +159,10 @@ public class CameraActivity extends Activity {
         	mCamera.setPreviewCallback(null);
             mCamera.release();
             mCamera = null;
+            mPreviewFrame.removeView(mPreview);
+            
+            Log.d(TAG, "camera preview paused, camera has been released");
         }
-        
-        Log.d(TAG, "camera preview paused, camera has been released");
     }
     
     /** A safe way to get an instance of the Camera object. */
@@ -110,46 +187,16 @@ public class CameraActivity extends Activity {
     	mHelpDialog.show();
     }
     
-    /** Listener method for the capture button. Takes a snapshot of the camera preview. */
-    public void captureButtonClick(View view) {
-    	// get an image from the camera
-        mCamera.takePicture(null, null, mPicture);
-        Log.d(TAG, "picture taken");
-    }
-    
     /** Callback to run when a picture has been taken. */
     private PictureCallback mPicture = new PictureCallback() {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
         	
-//        	// create a file for the image to be saved as
-//            File billImage = MediaFileHelper.getOutputMediaFile(
-//            		  			MediaFileHelper.MEDIA_TYPE_IMAGE);
-//            
-//            // code that saves the image to the SD card
-//            if (billImage == null) {
-//                Log.d(TAG, "Error creating media file, check storage permissions: ");
-//                return;
-//            }
-//            
-//            try {
-//                FileOutputStream fos = new FileOutputStream(billImage);
-//                fos.write(data);
-//                fos.close();
-//            }
-//            catch (FileNotFoundException e) {
-//                Log.d(TAG, "File not found: " + e.getMessage());
-//            }
-//            catch (IOException e) {
-//                Log.d(TAG, "Error accessing file: " + e.getMessage());
-//            }
-//            // end of code that saves the image to the SD card
-        	
         	// get the time stamp for the image name
         	String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         	// get the path to our app's internal storage directory and append image name
-        	String path = getApplicationContext().getFilesDir().getPath() + 
+        	String path = getApplicationContext().getCacheDir().getPath() + 
         				  File.separator + "IMG_" + timeStamp + ".jpg";
         	
         	// save the image to the app's internal storage directory
@@ -171,4 +218,19 @@ public class CameraActivity extends Activity {
         	startActivity(intent);
         }
     };
+    
+    private void handleTouchToFocus() {
+    	if (mCamera != null && !isFocusing) {
+
+    		isFocusing = true;
+    		// focus the camera, no callback
+    		mCamera.autoFocus(new Camera.AutoFocusCallback() {
+    			@Override
+    			public void onAutoFocus(boolean success, Camera camera) {
+    				// no longer attempting to auto focus
+    				isFocusing = false;
+    			}
+    		});
+    	}
+    }
 }

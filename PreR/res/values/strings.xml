@@ -8,7 +8,7 @@
     <string name="help_button_description">Help button to provide tips for taking a picture of a bill.</string>
     <string name="title_capture_bill">Capture Bill</string>
     <string name="review_bill_image">View to display bill image.</string>
-    <string name="title_review_bill">Review Bill</string>
+    <string name="title_review_bill">Preview</string>
     <string name="search_edittext_hint">Procedure Name / CPT Code</string>
     <string name="title_activity_search">Search Procedures</string>
     <string name="zipcode_edittext_hint">Near: Zip Code, City, ...</string>
@@ -71,7 +71,7 @@
     <string name="title_activity_procedure_information">Procedure Information</string>
     <string name="hospital_info">\n123 Fake St.\nSan Luis Obispo</string>
     <string name="upload_text">Upload</string>
-    <string name="retake_picture_button">Retake</string>
+    <string name="retake_text">Retake</string>
     <string name="upload_success_message">Your bill has been successfully uploaded.</string>
     <string name="thank_you_message">Thank you for making health care healthier!</string>
     <string name="gohome_button">Home</string>
@@ -88,5 +88,6 @@
     <string name="start_searching">Start searching procedures now!</string>
     <string name="intro_btn_text">Next</string>
     <string name="intro_final_btn_text">Let\'s get started!</string>
+    <string name="help_checkbox_text">Don\'t show this on camera start</string>
 
 </resources>
