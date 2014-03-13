@@ -7,6 +7,7 @@
         android:id="@+id/help_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:text="@string/help_checkbox_text"/>
 
 </RelativeLayout>

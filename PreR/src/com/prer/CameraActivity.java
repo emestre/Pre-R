@@ -90,6 +90,7 @@ public class CameraActivity extends Activity {
     }
     
     private void initLayout() {
+    	// inflate the check box layout design
     	View checkBoxView = View.inflate(this, R.layout.help_dialog, null);
     	CheckBox checkBox = (CheckBox) checkBoxView.findViewById(R.id.help_checkbox);
     	checkBox.setChecked(!mShowHelp);
@@ -110,14 +111,15 @@ public class CameraActivity extends Activity {
     	// build the help dialog window
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Picture Tips");
-        builder.setMessage("Touch to focus.\nPlace the bill flat on a dark surface for best results.\n" +
+        builder.setMessage("Touch to focus.\nPlace the bill on a dark, flat surface for best results.\n\n" +
         				   "PreR will not store or use any personal information visible on your bill, " +
-        				   "however please cover any sensitive information you wish not to be seen.");
+        				   "but please cover any sensitive information you wish not to be seen.");
         builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
         	public void onClick(DialogInterface dialog,int id) {
         		dialog.dismiss();
         	}
 		});
+        // add the check box to the alert dialog
         builder.setView(checkBoxView);
         // create the help window dialog
         mHelpDialog = builder.create();

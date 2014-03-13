@@ -100,11 +100,7 @@ public class CameraPreview extends ViewGroup implements SurfaceHolder.Callback {
         this.requestLayout();
         Log.d(TAG, "preview size set to: " + mPreviewSize.width +" x " + mPreviewSize.height);
         
-        // set the picture size close to screen size
-        Log.d(TAG, "supported picture sizes:");
-    	for (Camera.Size size : mSupportedPictureSizes) {
-    		Log.d(TAG, size.width + " x " + size.height);
-    	}
+     // set the picture size close to screen size
     	mCamParams.setPictureSize(mPictureSize.width, mPictureSize.height);
         Log.d(TAG, "picture size set to: " + mPictureSize.width + " x " + mPictureSize.height);
         
