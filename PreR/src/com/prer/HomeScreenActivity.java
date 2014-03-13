@@ -27,12 +27,6 @@ public class HomeScreenActivity extends SherlockActivity {
         setContentView(R.layout.activity_homescreen);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getSupportMenuInflater().inflate(R.menu.homescreen, menu);
-        return true;
-    }
     
     /** Start the search activity. */
     public void startSearch(View view) {
