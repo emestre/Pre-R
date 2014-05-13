@@ -11,22 +11,23 @@
         android:layout_width="300dp"
         android:layout_height="75dp"
         android:layout_margin="15dp"
-        android:drawableRight="@drawable/ic_action_search"
+        android:drawableLeft="@drawable/ic_action_search_light"
         android:text="@string/home_search_button_text"
         android:textSize="18sp"
+        android:textColor="#FFFFFF"
         android:onClick="startSearch"
-        android:background="@drawable/button_background" 
-         />
+        android:background="@drawable/btn_default_bg"/>
 
 	<Button
         android:id="@+id/home_camera_button"
         android:layout_width="300dp"
         android:layout_height="75dp"
         android:layout_margin="15dp"
-        android:drawableRight="@drawable/ic_action_camera"
+        android:drawableLeft="@drawable/ic_action_camera_light"
         android:text="@string/home_camera_button_text" 
         android:textSize="18sp"
+        android:textColor="#FFFFFF"
         android:onClick="startCamera"
-        android:background="@drawable/button_background" />
+        android:background="@drawable/btn_default_bg" />
 
 </LinearLayout>

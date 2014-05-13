@@ -329,7 +329,7 @@ public class SearchActivity extends SherlockActivity {
 
 		Location loc = getLocation();
 		if (loc != null) {
-			addressEditText.setHint("Using default location");
+			addressEditText.setText("Current Location");
 			searchEditText.requestFocus();
 		}
 	}
@@ -383,8 +383,7 @@ public class SearchActivity extends SherlockActivity {
 	private Location getLocation() {
 		Location location = null;
 		try {
-			locationManager = (LocationManager) getApplicationContext()
-					.getSystemService(LOCATION_SERVICE);
+			locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
 
 			// getting GPS status
 			boolean isGPSEnabled = locationManager
@@ -404,7 +403,8 @@ public class SearchActivity extends SherlockActivity {
 							.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 				}
 			}
-		if (isGPSEnabled) {
+			
+			if (isGPSEnabled) {
 				if (location == null) {
 					locationManager.requestLocationUpdates(
 							LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
@@ -416,11 +416,12 @@ public class SearchActivity extends SherlockActivity {
 					}
 				}
 			}
-
-		} catch (Exception e) {
+	
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
-
+	
 		return location;
 	}
 

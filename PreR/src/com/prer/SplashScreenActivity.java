@@ -2,14 +2,18 @@ package com.prer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class SplashScreenActivity extends Activity {
 	
-    private final int SPLASH_DISPLAY_TIME = 1750;
+	public static final String FIRST_RUN_PREF_NAME = "first run preference";
+	public static final String IS_FIRST_RUN = "first run";
+    private final int SPLASH_DISPLAY_TIME = 1250;
 
     /** Called when the activity is first created. */
     @Override
@@ -28,8 +32,19 @@ public class SplashScreenActivity extends Activity {
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
-                /* Create an Intent that will start the HomeScreenActivity */
-                Intent intent = new Intent(SplashScreenActivity.this, FirstUseActivity.class);
+                // go to tutorial or home screen based on if this is first run of app
+            	SharedPreferences firstRunPreference = 
+	    				getSharedPreferences(SplashScreenActivity.FIRST_RUN_PREF_NAME, 
+	    				FragmentActivity.MODE_PRIVATE);
+            	
+            	Intent intent;
+            	if (firstRunPreference.getBoolean(IS_FIRST_RUN, true)) {
+            		intent = new Intent(SplashScreenActivity.this, FirstUseActivity.class);
+            	}
+            	else {
+            		intent = new Intent(SplashScreenActivity.this, HomeScreenActivity.class);
+            	}
+                
                 startActivity(intent);
                 finish();
             }

@@ -35,8 +35,9 @@
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:layout_margin="15dp"
-            android:background="@drawable/button_background"
-            android:text="@string/intro_btn_text" />
+            android:background="@drawable/btn_default_bg"
+            android:text="@string/intro_btn_text"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
 </LinearLayout>

@@ -2,50 +2,70 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
     android:animateLayoutChanges="true"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-
-    <AutoCompleteTextView
-        android:id="@+id/zip_code_edittext"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_action_search"
-        android:hint="@string/zipcode_edittext_hint" />
+        android:layout_margin="10dp">
+
+        <ImageView
+            android:id="@+id/location_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_action_location_dark"/>
+        
+	    <AutoCompleteTextView
+	        android:id="@+id/zip_code_edittext"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_toRightOf="@+id/location_icon"
+	        android:hint="@string/zipcode_edittext_hint"/>
 
         <Button
             android:id="@+id/clear_address_button"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:layout_gravity="right|center_vertical"
             android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:background="@drawable/abs__ic_clear_holo_light" />
-    </FrameLayout>
+	        
+    </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:layout_margin="10dp">
+        
+        <ImageView
+            android:id="@+id/search_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_action_search_dark"/>
 
         <EditText
             android:id="@+id/search_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawableLeft="@drawable/ic_action_search"
-            android:hint="@string/search_edittext_hint" />
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/search_icon"
+            android:hint="@string/search_edittext_hint"/>
 
         <Button
             android:visibility="gone"
             android:id="@+id/search_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="6"
             android:text="@string/search_button_text" />
-    </LinearLayout>
+        
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/no_results_view"

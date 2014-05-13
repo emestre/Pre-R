@@ -9,7 +9,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.Window;
-import android.view.WindowManager;
 
 public class FirstUseActivity extends FragmentActivity {
 
@@ -49,32 +48,30 @@ public class FirstUseActivity extends FragmentActivity {
 			Fragment frag;
 			switch (position) {
 			case 0:
-				frag = IntroFragment.create(R.drawable.prer_splash,
-						R.string.welcome, position);
+				frag = IntroFragment.create(R.drawable.prer_splash, R.string.welcome, position);
 				break;
+				
 			case 1:
-				frag = IntroFragment.create(R.drawable.search_btn_screenshot,
-						R.string.search_tut, position);
+				frag = IntroFragment.create(R.drawable.search_btn_screenshot, R.string.search_tut, position);
 				break;
+				
 			case 2:
-				frag = IntroFragment.create(
-						R.drawable.search_fields_screenshot,
-						R.string.search_tut2, position);
+				frag = IntroFragment.create(R.drawable.search_fields_screenshot, R.string.search_tut2, position);
 				break;
+				
 			case 3:
-				frag = IntroFragment.create(
-						R.drawable.search_result_screenshot,
-						R.string.search_tut3, position);
+				frag = IntroFragment.create(R.drawable.search_result_screenshot, R.string.search_tut3, position);
 				break;
+				
 			case 4:
-				frag = IntroFragment.create(0, R.string.start_searching,
-						position);
+				frag = IntroFragment.create(0, R.string.start_searching, position);
 				break;
+				
 			default:
-				frag = IntroFragment.create(R.drawable.prer_splash,
-						R.string.welcome, position);
+				frag = IntroFragment.create(R.drawable.prer_splash, R.string.welcome, position);
 				break;
 			}
+			
 			return frag;
 		}
 

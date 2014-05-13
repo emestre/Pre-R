@@ -3,15 +3,15 @@
 
     <string name="app_name">PreR</string>
     <string name="action_settings">Settings</string>
-    <string name="home_search_button_text">Search for a Procedure</string>
+    <string name="home_search_button_text">Search for a Service</string>
     <string name="home_camera_button_text">Upload a Bill</string>
     <string name="help_button_description">Help button to provide tips for taking a picture of a bill.</string>
     <string name="title_capture_bill">Capture Bill</string>
     <string name="review_bill_image">View to display bill image.</string>
-    <string name="title_review_bill">Preview</string>
-    <string name="search_edittext_hint">Procedure Name / CPT Code</string>
-    <string name="title_activity_search">Search Procedures</string>
-    <string name="zipcode_edittext_hint">Near: Zip Code, City, ...</string>
+    <string name="title_review_bill">Review</string>
+    <string name="search_edittext_hint">Service Name / CPT Code</string>
+    <string name="title_activity_search">Search Services</string>
+    <string name="zipcode_edittext_hint">Near: Zip Code, City ...</string>
     <string name="search_button_text">Go</string>
 
     <string-array name="procedure_list">
@@ -68,7 +68,7 @@
     <string name="title_activity_procedure_results_list">Results</string>
     <string name="sort_price">Sort by price</string>
     <string name="sort_distance">Sort by distance</string>
-    <string name="title_activity_procedure_information">Procedure Information</string>
+    <string name="title_activity_procedure_information">Service Information</string>
     <string name="hospital_info">\n123 Fake St.\nSan Luis Obispo</string>
     <string name="upload_text">Upload</string>
     <string name="retake_text">Retake</string>
