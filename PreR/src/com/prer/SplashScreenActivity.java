@@ -25,7 +25,7 @@ public class SplashScreenActivity extends Activity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
         						WindowManager.LayoutParams.FLAG_FULLSCREEN);
         
-        setContentView(R.layout.splashscreen);
+        setContentView(R.layout.activity_splashscreen);
 
         // New Handler to start the HomeScreenActivity 
         // and close the splash screen after some seconds

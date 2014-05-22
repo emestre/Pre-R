@@ -9,9 +9,9 @@
     <string name="title_capture_bill">Capture Bill</string>
     <string name="review_bill_image">View to display bill image.</string>
     <string name="title_review_bill">Review</string>
-    <string name="search_edittext_hint">Service Name / CPT Code</string>
+    <string name="search_edittext_hint">Service Name/CPT Code</string>
     <string name="title_activity_search">Search Services</string>
-    <string name="zipcode_edittext_hint">Near: Zip Code, City ...</string>
+    <string name="zipcode_edittext_hint">City or Zip Code</string>
     <string name="search_button_text">Go</string>
 
     <string-array name="procedure_list">
@@ -61,8 +61,8 @@
         <item>94539</item>
     </string-array>
 
-    <string name="incorrect_zip">Please enter a valid zip code</string>
-    <string name="no_results">No Results Found</string>
+    <string name="incorrect_zip">Please enter a valid zip code.</string>
+    <string name="no_results">No results found.</string>
     <string name="capture_button_text">Capture</string>
     <string name="splash_logo_description">The PreR brand logo with application icon and slogan.</string>
     <string name="title_activity_procedure_results_list">Results</string>

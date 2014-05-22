@@ -95,12 +95,15 @@ public class CameraPreview extends ViewGroup implements SurfaceHolder.Callback {
         mCamParams.setRotation(90);
         mCamParams.setJpegQuality(50);
         
+//        if (mCamParams.getSupportedFlashModes().contains(Camera.Parameters.FLASH_MODE_AUTO))
+//        	mCamParams.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+        
         // set the preview size to the aspect ratio calculated by getOptimalPreviewSize()
         mCamParams.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
         this.requestLayout();
         Log.d(TAG, "preview size set to: " + mPreviewSize.width +" x " + mPreviewSize.height);
         
-     // set the picture size close to screen size
+        // set the picture size close to screen size
     	mCamParams.setPictureSize(mPictureSize.width, mPictureSize.height);
         Log.d(TAG, "picture size set to: " + mPictureSize.width + " x " + mPictureSize.height);
         

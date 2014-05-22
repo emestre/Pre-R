@@ -100,16 +100,20 @@ public class ReviewBillActivity extends SherlockActivity {
     		// rotate the image by the amount indicated in the EXIF tags
     		if (degrees != 0) {
     	    	Matrix rotateMatrix = new Matrix();
-    	    	rotateMatrix.postRotate(degrees);
+    	    	rotateMatrix.preRotate(degrees);
     	    	billImage = Bitmap.createBitmap(billImage, 0, 0, billImage.getWidth(), 
     	    						billImage.getHeight(), rotateMatrix, false);
     		}
+    		billImage = billImage.copy(Bitmap.Config.ARGB_8888, true);
     	}
     	
         // set ImageView to display the bill image
         ImageView capturedBill = (ImageView) findViewById(R.id.review_bill);
         capturedBill.setImageBitmap(billImage);
         capturedBill.setVisibility(View.VISIBLE);
+        
+        // run OCR on bitmap
+//        new RunTesseractOCR(this.getApplicationContext()).execute(billImage);
     }
     
 	@Override
@@ -275,4 +279,30 @@ public class ReviewBillActivity extends SherlockActivity {
         
         return builder.create();
     }
+    
+//    private class RunTesseractOCR extends AsyncTask<Bitmap, Integer, String> {
+//    	
+//    	private Context mContext;
+//    	
+//    	public RunTesseractOCR(Context context) {
+//    		mContext = context;
+//    	}
+//    	
+//    	@Override
+//		protected String doInBackground(Bitmap... params) {
+//			Bitmap image = params[0];
+//			
+//	        TessBaseAPI baseApi = new TessBaseAPI();
+//	        baseApi.init(Environment.getExternalStorageDirectory() + "/tesseract", "eng");
+//	        baseApi.setImage(image);
+//	        String recognizedText = baseApi.getUTF8Text();
+//	        baseApi.end();
+//	            		
+//    		return recognizedText;
+//		}
+//    	
+//        protected void onPostExecute(String result) {
+//        	Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
+//        }
+//    }
 }
