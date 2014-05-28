@@ -68,13 +68,14 @@
         </activity>
         
         <activity
-            android:name="com.prer.ProcedureResultsList"
+            android:name="com.prer.ProcedureResultsListActivity"
             android:label="@string/title_activity_procedure_results_list" >
         </activity>
         
         <activity
-            android:name="com.prer.ProcedureInformation"
-            android:label="@string/title_activity_procedure_information" >
+            android:name="com.prer.ProcedureInformationActivity"
+            android:label="@string/title_activity_procedure_information"
+            android:screenOrientation="portrait" >
         </activity>
 
         <activity

@@ -153,7 +153,7 @@ public class SearchActivity extends SherlockActivity
 					filteredResults.clear();
 				}
 				else {
-					Intent intent = new Intent(context, ProcedureResultsList.class);
+					Intent intent = new Intent(context, ProcedureResultsListActivity.class);
 					intent.putExtra("PROCEDURE",
 							((TextView) arg1.findViewById(android.R.id.text1)).getText().toString().toLowerCase(DEFAULT_LOCALE));
 					intent.putExtra("LATITUDE", searchLocation.getLatitude());
@@ -169,9 +169,7 @@ public class SearchActivity extends SherlockActivity
 			public void onFocusChange(View v, boolean hasFocus) {
 				if (!hasFocus) {
 					String zipcodeText = addressEditText.getText().toString();
-					
-					Log.d(TAG, "address after lost focus: " + zipcodeText);
-					
+										
 					if (!isOnline()) {
 						showToast("Please enable a network connection on your device");
 						return;
@@ -185,35 +183,7 @@ public class SearchActivity extends SherlockActivity
 					}
 				}
 			}
-			
 		});
-//		addressEditText.addTextChangedListener(new TextWatcher() {
-//
-//			@Override
-//			public void afterTextChanged(Editable s) {
-//				String zipcodeText = addressEditText.getText().toString();
-//				
-//				Log.d(TAG, "address after text changed: " + zipcodeText);
-//				
-//				if (!isOnline()) {
-//					showToast("Please enable a network connection on your device");
-//				//	addressEditText.setText("");
-//					return;
-//				}
-//				
-//				if (!zipcodeText.isEmpty())
-//					setLocation(zipcodeText);
-//			}
-//
-//			@Override
-//			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//			}
-//
-//			@Override
-//			public void onTextChanged(CharSequence s, int start, int before, int count) {
-//			}
-//
-//		});
 
 		searchEditText.addTextChangedListener(new TextWatcher() {
 			@Override
@@ -233,11 +203,6 @@ public class SearchActivity extends SherlockActivity
 					return;
 				}
 				
-//				if (isBadLocation) {
-//					showToast("Please enter a valid location to search from.");
-//					addressEditText.requestFocus();
-//					filteredResults.clear();
-//				}
 				if (isNumeric(searchText) && searchText.length() == 5) {
 					getResultsByCode(zipcodeText, searchText);
 				} 
@@ -290,6 +255,13 @@ public class SearchActivity extends SherlockActivity
 			// empty address field, user must enter location
 			this.isBadLocation = true;
 		}
+		
+		if (this.searchLocation != null) {
+			Log.d(TAG, "search location set to: " + this.searchLocation.toString());
+		}
+		else {
+			Log.d(TAG, "search location set to NULL");
+		}
 	}
 	
 	private Address getLocationFromAddress(String addr) {
@@ -309,24 +281,6 @@ public class SearchActivity extends SherlockActivity
 		return null;
 	}
 	
-//	private Address currentLocationToAddress() {
-//		Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-//		
-//		try {
-//			List<Address> addresses = geocoder.getFromLocation(this.currentLocation.getLatitude(), 
-//					this.currentLocation.getLongitude(), 1);
-//			
-//			if (addresses != null && !addresses.isEmpty()) {
-//				return addresses.get(0);
-//			}
-//		}
-//		catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		
-//		return null;
-//	}
-	
 	private boolean isOnline() {
 	    ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
@@ -344,7 +298,7 @@ public class SearchActivity extends SherlockActivity
         } catch (Exception e) {}
         
         toast = Toast.makeText(SearchActivity.this, msg, Toast.LENGTH_LONG);
-        toast.show();  //finally display it
+        toast.show();
     }
 
 	private void getCities() {
@@ -410,9 +364,7 @@ public class SearchActivity extends SherlockActivity
 			filteredResults.add(procedure.name);
 	}
 
-	private void getResultsByName(String zipcodeText, String searchText) {
-//		setLocation(zipcodeText);
-		
+	private void getResultsByName(String zipcodeText, String searchText) {		
 		RestClient query = new RestClient();
 		query.getServicesByName(searchText, new GetResponseCallback() {
 			@Override
@@ -423,9 +375,7 @@ public class SearchActivity extends SherlockActivity
 		});
 	}
 
-	private void getResultsByCode(String zipcodeText, String searchText) {
-//		setLocation(zipcodeText);
-		
+	private void getResultsByCode(String zipcodeText, String searchText) {		
 		RestClient query = new RestClient();
 		query.getServicesByCptCode(searchText, new GetResponseCallback() {
 			@Override
@@ -447,7 +397,7 @@ public class SearchActivity extends SherlockActivity
 			end = endAt + 1;
 		}
 		
-		// always add current location to list of selections
+		// add current location to list of selections if it's known
 		if (this.currentLocation != null)
 			results.add("Current Location");
 		
@@ -541,11 +491,12 @@ public class SearchActivity extends SherlockActivity
 					}
 				}
 			};
+			
 			return filter;
 		}
 	}
 	
-	
+	// START OF LOCATION CALL BACKS *******************************
 	
 	/*
      * Called by Location Services when the request to connect the
@@ -563,8 +514,11 @@ public class SearchActivity extends SherlockActivity
         
         if (this.currentLocation != null) {
         	Log.d(TAG, "last location: " + currentLocation.toString());
-        	addressEditText.setText("Current Location");
-			searchEditText.requestFocus();
+        	if (addressEditText.getText().toString().isEmpty()) {
+        		addressEditText.requestFocus();
+	        	addressEditText.setText("Current Location");
+				searchEditText.requestFocus();
+        	}
         }
         else {
         	Log.d(TAG, "last location returned NULL");
@@ -611,26 +565,30 @@ public class SearchActivity extends SherlockActivity
 			if (isNetworkEnabled) {
 				this.currentLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 				
-				if (this.currentLocation == null) {
-					locationManager.requestLocationUpdates(
-							LocationManager.NETWORK_PROVIDER, MIN_UPDATE_MSEC, MIN_DISTANCE_CHANGE, this);
+				if (this.currentLocation != null) {
+					if (addressEditText.getText().toString().isEmpty()) {
+						addressEditText.requestFocus();
+						addressEditText.setText("Current Location");
+						searchEditText.requestFocus();
+					}
 				}
-				else {
-					addressEditText.setText("Current Location");
-					searchEditText.requestFocus();
-				}
+				
+				locationManager.requestLocationUpdates(
+						LocationManager.NETWORK_PROVIDER, MIN_UPDATE_MSEC, MIN_DISTANCE_CHANGE, this);
 			}
 			else if (isGPSEnabled) {
 				this.currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 				
-				if (this.currentLocation == null) {
-					locationManager.requestLocationUpdates(
-							LocationManager.GPS_PROVIDER, MIN_UPDATE_MSEC, MIN_DISTANCE_CHANGE, this);
+				if (this.currentLocation != null) {
+					if (addressEditText.getText().toString().isEmpty()) {
+						addressEditText.requestFocus();
+						addressEditText.setText("Current Location");
+						searchEditText.requestFocus();
+					}
 				}
-				else {
-					addressEditText.setText("Current Location");
-					searchEditText.requestFocus();
-				}
+				
+				locationManager.requestLocationUpdates(
+						LocationManager.GPS_PROVIDER, MIN_UPDATE_MSEC, MIN_DISTANCE_CHANGE, this);
 			}
 			else {
 				// location services are disabled
@@ -652,6 +610,11 @@ public class SearchActivity extends SherlockActivity
 		else {
 			this.currentLocation = new Location(location);
 		}
+		
+		if (addressEditText.getText().toString().equals("Current Location")) {
+			this.searchLocation = this.currentLocation;
+		}
+		
 		locationManager.removeUpdates(this);
 		Log.d(TAG, "updated current location: " + currentLocation.toString());
 	}

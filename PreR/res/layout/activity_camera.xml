@@ -23,8 +23,8 @@
         android:layout_marginBottom="10dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/capture_button_background"
-        android:src="@drawable/ic_action_camera_dark"
+        android:background="@drawable/btn_default_bg"
+        android:src="@drawable/ic_action_camera_light"
         android:enabled="false" />
     
     <ImageButton

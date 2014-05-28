@@ -12,7 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class ProcedureInformation extends SherlockActivity {
+public class ProcedureInformationActivity extends SherlockActivity {
 	protected TextView procedureNameView;
 	protected TextView procedureHospitalView;
 	protected TextView procedurePriceView;
@@ -46,11 +46,6 @@ public class ProcedureInformation extends SherlockActivity {
 		hospitalPhoneNumber = getIntent().getExtras().getString("HOSPITAL_PHONE");
 		hospitalWebsiteUrl =  getIntent().getExtras().getString("HOSPITAL_WEBSITE");
 		procedureHospitalView.setText(hospitalName + hospitalAddr);
-		
-
-		hospitalPhone.setText("Call Number");
-		hospitalDirections.setText("Get Directions");
-		hospitalWebsite.setText("Navigate to Website");
 
 		initListeners();
 	}

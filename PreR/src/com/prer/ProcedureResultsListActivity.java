@@ -6,25 +6,25 @@ import java.util.Comparator;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class ProcedureResultsList extends Activity {
+public class ProcedureResultsListActivity extends SherlockActivity {
 
 	private ArrayList<Procedure> filteredProcedures;
 	private ProcedureViewAdapter adapter;
@@ -107,7 +107,7 @@ public class ProcedureResultsList extends Activity {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				Intent intent = new Intent(context, ProcedureInformation.class);
+				Intent intent = new Intent(context, ProcedureInformationActivity.class);
 				intent.putExtra("PROCEDURE", 
 						((TextView) arg1.findViewById(R.id.name_textView)).getText().toString());
 				intent.putExtra("PRICE",  
@@ -159,8 +159,8 @@ public class ProcedureResultsList extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.procedure_results_list, menu);
+		// inflate the menu, this adds items to the action bar if it is present.
+		this.getSupportMenuInflater().inflate(R.menu.procedure_results_list, menu);
 		return true;
 	}
 

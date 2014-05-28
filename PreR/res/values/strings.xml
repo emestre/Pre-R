@@ -13,54 +13,6 @@
     <string name="title_activity_search">Search Services</string>
     <string name="zipcode_edittext_hint">City or Zip Code</string>
     <string name="search_button_text">Go</string>
-
-    <string-array name="procedure_list">
-        <item>Ankle X-Ray</item>
-        <item>Ankle X-Ray</item>
-        <item>Ankle Brace</item>
-        <item>Ankle Cast</item>
-        <item>Ankle Surgery</item>
-        <item>Ankle Surgery</item>
-        <item>Ankle Splint</item>
-        <item>Wrist X-Ray</item>
-        <item>Wrist Brace</item>
-        <item>Wrist Brace</item>
-        <item>Wrist Cast</item>
-        <item>Wrist Cast</item>
-        <item>Wrist Surgery</item>
-        <item>Wrist Splint</item>
-        <item>Shoulder X-Ray</item>
-        <item>Shoulder X-Ray</item>
-        <item>Shoulder Brace</item>
-        <item>Shoulder Cast</item>
-        <item>Shoulder Surgery</item>
-        <item>Shoulder Surgery</item>
-        <item>Ankle X-Ray</item>
-    </string-array>
-    <string-array name="zipcode_list">
-        <item>93405</item>
-        <item>93401</item>
-        <item>93405</item>
-        <item>93405</item>
-        <item>93405</item>
-        <item>93401</item>
-        <item>93405</item>
-        <item>93405</item>
-        <item>93405</item>
-        <item>93401</item>
-        <item>93405</item>
-        <item>93401</item>
-        <item>93405</item>
-        <item>93405</item>
-        <item>93405</item>
-        <item>93401</item>
-        <item>93405</item>
-        <item>93405</item>
-        <item>93405</item>
-        <item>93401</item>
-        <item>94539</item>
-    </string-array>
-
     <string name="incorrect_zip">Please enter a valid zip code.</string>
     <string name="no_results">No results found.</string>
     <string name="capture_button_text">Capture</string>
@@ -89,5 +41,11 @@
     <string name="intro_btn_text">Next</string>
     <string name="intro_final_btn_text">Let\'s get started!</string>
     <string name="help_checkbox_text">Don\'t show this on camera start</string>
+    <string name="button_call_text">Call Hospital</string>
+    <string name="button_directions_text">Get Directions</string>
+    <string name="button_website_text">Go to Website</string>
+    <string name="service_label_text">Service:  </string>
+    <string name="price_label_text">Price:      </string>
+    <string name="hospital_label_text">Hospital:</string>
 
 </resources>
