@@ -34,8 +34,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="18dp"
-        android:layout_marginRight="18dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="25dp"
         android:background="@drawable/help_button"
         android:src="@drawable/ic_action_help"
         android:onClick="helpButtonClick" />

@@ -44,8 +44,8 @@
     <string name="button_call_text">Call Hospital</string>
     <string name="button_directions_text">Get Directions</string>
     <string name="button_website_text">Go to Website</string>
-    <string name="service_label_text">Service:  </string>
-    <string name="price_label_text">Price:      </string>
+    <string name="service_label_text">Service:</string>
+    <string name="price_label_text">Price:</string>
     <string name="hospital_label_text">Hospital:</string>
 
 </resources>

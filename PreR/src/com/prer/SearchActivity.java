@@ -9,6 +9,15 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang3.text.WordUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,18 +28,17 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -61,15 +69,14 @@ public class SearchActivity extends SherlockActivity
 	protected ArrayList<String> filteredResults;
 	protected ListView results_listView;
 	protected EditText searchEditText;
-	protected AutoCompleteTextView addressEditText;
+	protected AutoCompleteTextView locationEditText;
 	protected TextView noResultsView;
-	protected Button clearAddressButton;
 
 	private Location currentLocation;
 	private Location searchLocation;
 	private LocationClient locationClient;
 	private LocationManager locationManager;
-	private boolean isBadLocation = false;
+	private boolean isBadLocation = true;
 
 	private ArrayList<String> cities;
 	private String lastSearch;
@@ -127,21 +134,12 @@ public class SearchActivity extends SherlockActivity
 
 		results_listView = (ListView) findViewById(R.id.results_list);
 		searchEditText = (EditText) findViewById(R.id.search_edittext);
-		addressEditText = (AutoCompleteTextView) findViewById(R.id.zip_code_edittext);
-		addressEditText.setThreshold(1);
+		locationEditText = (AutoCompleteTextView) findViewById(R.id.zip_code_edittext);
+		locationEditText.setThreshold(1);
 		noResultsView = (TextView) findViewById(R.id.no_results_view);
-		clearAddressButton = (Button) findViewById(R.id.clear_address_button);
 	}
 
 	private void initListeners() {
-
-		clearAddressButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				addressEditText.selectAll();
-			}
-		});
 
 		results_listView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -149,8 +147,9 @@ public class SearchActivity extends SherlockActivity
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				if (isBadLocation) {
 					showToast("Please enter a valid location to search from.");
-					addressEditText.requestFocus();
+					locationEditText.requestFocus();
 					filteredResults.clear();
+					resultsAdapter.notifyDataSetChanged();
 				}
 				else {
 					Intent intent = new Intent(context, ProcedureResultsListActivity.class);
@@ -163,20 +162,21 @@ public class SearchActivity extends SherlockActivity
 			}
 		});
 
-		addressEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
+		locationEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
 				if (!hasFocus) {
-					String zipcodeText = addressEditText.getText().toString();
+					String locationText = locationEditText.getText().toString();
 										
 					if (!isOnline()) {
-						showToast("Please enable a network connection on your device");
+						showToast("A network connection needed to search.");
 						return;
 					}
 					
-					if (!zipcodeText.isEmpty()) {
-						setLocation(zipcodeText);
+					if (!locationText.isEmpty()) {
+						Log.d(TAG, "address entered: " + locationText);
+						setLocation(locationText);
 					}
 					else {
 						isBadLocation = true;
@@ -188,30 +188,8 @@ public class SearchActivity extends SherlockActivity
 		searchEditText.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable arg0) {
-				String zipcodeText = addressEditText.getText().toString();
-				String searchText = searchEditText.getText().toString();
-				
-				if (searchText.isEmpty()) {
-					filteredResults.clear();
-					resultsAdapter.notifyDataSetChanged();
-					noResultsView.setVisibility(View.GONE);
-					return;
-				}
-				
-				if (!isOnline()) {
-					showToast("Network connection needed to search.");
-					return;
-				}
-				
-				if (isNumeric(searchText) && searchText.length() == 5) {
-					getResultsByCode(zipcodeText, searchText);
-				} 
-				else if (!isNumeric(searchText)) {
-					getResultsByName(zipcodeText, searchText);
-				}
-				else {
-					filteredResults.clear();
-				}
+				// query the database for services matching the entered text
+				getServiceSearchText();
 			}
 
 			@Override
@@ -220,65 +198,145 @@ public class SearchActivity extends SherlockActivity
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 		});
+		
+		searchEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (hasFocus) {
+					// when focus returns to the search field,
+					// re-query the database for matching services
+					getServiceSearchText();
+				}
+				else {
+					// when focus leaves the search field,
+					// clear the auto-complete list so user can use the address field
+					filteredResults.clear();
+					resultsAdapter.notifyDataSetChanged();
+					noResultsView.setVisibility(View.GONE);
+				}
+			}
+			
+		});
 	}
 	
-	private void setLocation(String zipcodeText) {	
-		Address address = null;
-		
-		if (!zipcodeText.isEmpty()) {
-			if (zipcodeText.equals("Current Location")) {
+	private void setLocation(String locationText) {			
+		if (!locationText.isEmpty()) {
+			if (locationText.equals("Current Location")) {
 				this.searchLocation = this.currentLocation;
 				this.isBadLocation = false;
 			}
 			else {
-				address = getLocationFromAddress(zipcodeText);
-				if (address != null) {
-					Log.d(TAG, "address: " + address.toString());
-					
-					if (this.searchLocation != null) {
-						this.searchLocation.reset();
-					}
-					else {
-						this.searchLocation = new Location("custom");
-					}
-					this.searchLocation.setLatitude(address.getLatitude());
-					this.searchLocation.setLongitude(address.getLongitude());
-					
-					this.isBadLocation = false;
-				}
-				else {
-					this.isBadLocation = true;
-				}
+				// get the latitude and longitude from the entered text
+				new MyGeocoderTask().execute(locationText);
 			}
 		}
 		else {
 			// empty address field, user must enter location
+			this.searchLocation = null;
 			this.isBadLocation = true;
-		}
-		
-		if (this.searchLocation != null) {
-			Log.d(TAG, "search location set to: " + this.searchLocation.toString());
-		}
-		else {
-			Log.d(TAG, "search location set to NULL");
 		}
 	}
 	
-	private Address getLocationFromAddress(String addr) {
-
-		final Geocoder geocoder = new Geocoder(this);
-		try {
-			List<Address> addresses = geocoder.getFromLocationName(addr, 1);
-			
-			if (addresses != null && !addresses.isEmpty()) {
-				return addresses.get(0);
-			}
-		}
-		catch (IOException e) {
-			e.printStackTrace();
+	private void getServiceSearchText() {
+		String searchText = searchEditText.getText().toString();
+		
+		if (searchText.isEmpty()) {
+			filteredResults.clear();
+			resultsAdapter.notifyDataSetChanged();
+			noResultsView.setVisibility(View.GONE);
+			return;
 		}
 		
-		return null;
+		if (!isOnline()) {
+			showToast("A network connection needed to search.");
+			return;
+		}
+		
+		if (isNumeric(searchText) && searchText.length() == 5) {
+			getResultsByCode(searchText);
+		} 
+		else if (!isNumeric(searchText)) {
+			getResultsByName(searchText);
+		}
+		else {
+			filteredResults.clear();
+			resultsAdapter.notifyDataSetChanged();
+		}
+	}
+
+	private void parseProceduresFromResponse(String response) {
+		filteredResults.clear();
+		noResultsView.setVisibility(View.GONE);
+		JsonElement elem = new JsonParser().parse(response);
+
+		JsonArray array = elem.getAsJsonArray();
+		for (int index = 0; index < array.size(); ++index) {
+			elem = array.get(index);
+			JsonObject obj = elem.getAsJsonObject();
+			Log.i("SERVICE", obj.toString());
+			JsonElement innerElem = obj.get("name");
+			String name = innerElem.getAsString();
+
+			Procedure procedure = new Procedure(WordUtils.capitalize(name), "");
+			if (!filteredResults.contains(procedure.name))
+				filteredResults.add(procedure.name);
+		}
+		
+		if (filteredResults.size() == 0)
+			noResultsView.setVisibility(View.VISIBLE);
+	}
+
+	private void parseSingleServiceFromReponse(String response) {
+		filteredResults.clear();
+		noResultsView.setVisibility(View.GONE);
+		JsonElement elem = new JsonParser().parse(response);
+		JsonObject obj = elem.getAsJsonObject();
+		JsonElement innerElem = obj.get("name");
+		
+		if (innerElem == null) {
+			noResultsView.setVisibility(View.VISIBLE);
+			return;
+		}
+		String name = innerElem.getAsString();
+
+		Procedure procedure = new Procedure(WordUtils.capitalize(name), "");
+		if (!filteredResults.contains(procedure.name))
+			filteredResults.add(procedure.name);
+	}
+	
+	private boolean isSearchTextFieldActive() {
+		if (!this.searchEditText.hasFocus() || this.searchEditText.getText().toString().isEmpty()) {
+			return false;
+		}
+		
+		return true;
+	}
+
+	private void getResultsByName(String searchText) {		
+		RestClient query = new RestClient();
+		query.getServicesByName(searchText, new GetResponseCallback() {
+			@Override
+			void onDataReceived(String response) {
+				if (isSearchTextFieldActive()) {
+					parseProceduresFromResponse(response);
+					resultsAdapter.notifyDataSetChanged();
+				}
+			}
+		});
+	}
+
+	private void getResultsByCode(String searchText) {		
+		RestClient query = new RestClient();
+		query.getServicesByCptCode(searchText, new GetResponseCallback() {
+			@Override
+			void onDataReceived(String response) {
+				if (isSearchTextFieldActive()) {
+					parseSingleServiceFromReponse(response);
+					resultsAdapter.notifyDataSetChanged();
+				}
+			}
+		});
 	}
 	
 	private boolean isOnline() {
@@ -288,6 +346,7 @@ public class SearchActivity extends SherlockActivity
 	    if (netInfo != null && netInfo.isConnectedOrConnecting()) {
 	        return true;
 	    }
+	    
 	    return false;
 	}
 	
@@ -295,7 +354,8 @@ public class SearchActivity extends SherlockActivity
         try { 
         	if (toast.getView().isShown())    
         		return;
-        } catch (Exception e) {}
+        }
+        catch (Exception e) {}
         
         toast = Toast.makeText(SearchActivity.this, msg, Toast.LENGTH_LONG);
         toast.show();
@@ -324,117 +384,112 @@ public class SearchActivity extends SherlockActivity
 	private static boolean isNumeric(String str) {
 		return str.matches("-?\\d+(\\.\\d+)?");
 	}
-
-	private void parseProceduresFromResponse(String response) {
-		filteredResults.clear();
-		noResultsView.setVisibility(View.GONE);
-		JsonElement elem = new JsonParser().parse(response);
-
-		JsonArray array = elem.getAsJsonArray();
-		for (int index = 0; index < array.size(); ++index) {
-			elem = array.get(index);
-			JsonObject obj = elem.getAsJsonObject();
-			Log.i("SERVICE", obj.toString());
-			JsonElement innerElem = obj.get("name");
-			String name = innerElem.getAsString();
-
-			Procedure procedure = new Procedure(WordUtils.capitalize(name), "");
-			if (!filteredResults.contains(procedure.name))
-				filteredResults.add(procedure.name);
-		}
-		if (filteredResults.size() == 0)
-			noResultsView.setVisibility(View.VISIBLE);
-	}
-
-	private void parseSingleServiceFromReponse(String response) {
-		filteredResults.clear();
-		noResultsView.setVisibility(View.GONE);
-		JsonElement elem = new JsonParser().parse(response);
-		JsonObject obj = elem.getAsJsonObject();
-		JsonElement innerElem = obj.get("name");
+	
+	// START OF INNER CLASSES
+	
+	private class MyGeocoderTask extends AsyncTask<String, String, String> {
 		
-		if (innerElem == null) {
-			noResultsView.setVisibility(View.VISIBLE);
-			return;
-		}
-		String name = innerElem.getAsString();
-
-		Procedure procedure = new Procedure(WordUtils.capitalize(name), "");
-		if (!filteredResults.contains(procedure.name))
-			filteredResults.add(procedure.name);
-	}
-
-	private void getResultsByName(String zipcodeText, String searchText) {		
-		RestClient query = new RestClient();
-		query.getServicesByName(searchText, new GetResponseCallback() {
-			@Override
-			void onDataReceived(String response) {
-				parseProceduresFromResponse(response);
-				resultsAdapter.notifyDataSetChanged();
-			}
-		});
-	}
-
-	private void getResultsByCode(String zipcodeText, String searchText) {		
-		RestClient query = new RestClient();
-		query.getServicesByCptCode(searchText, new GetResponseCallback() {
-			@Override
-			void onDataReceived(String response) {
-				parseSingleServiceFromReponse(response);
-				resultsAdapter.notifyDataSetChanged();
-			}
-		});
-	}
-
-	private ArrayList<String> autocomplete(String typedText) {
-		ArrayList<String> results = new ArrayList<String>();
-		String oldText = typedText.substring(0, typedText.length() - 1);
-		int start = 0;
-		int end = cities.size();
-		
-		if (oldText.equals(lastSearch)) {
-			start = startFrom;
-			end = endAt + 1;
-		}
-		
-		// add current location to list of selections if it's known
-		if (this.currentLocation != null)
-			results.add("Current Location");
-		
-		String city;
-		for (int i = start; i < end; i++) {
-			city = cities.get(i);
-			if (city.toLowerCase(DEFAULT_LOCALE).startsWith(typedText.toLowerCase(DEFAULT_LOCALE))) {
-				String[] splitCity = city.split(",");
-				city = WordUtils.capitalize(splitCity[0].toLowerCase(DEFAULT_LOCALE)) + "," + splitCity[1];
-				results.add(city);
-			}
-		}
-
-		lastSearch = typedText;
-		// setting the indices based on whether current location is included in list
-		if (this.currentLocation != null) {
-			if (results.size() == 1) {
-				startFrom = 1;
-				endAt = -1;
+		protected void onPostExecute(String result) {
+			if (searchLocation != null) {
+				Log.d(TAG, "search location set to: " + searchLocation.toString());
 			}
 			else {
-				startFrom = cities.indexOf(results.get(1).toUpperCase(DEFAULT_LOCALE));
-				endAt = cities.indexOf(results.get(results.size() - 1).toUpperCase(DEFAULT_LOCALE));
+				Log.d(TAG, "search location set to NULL");
 			}
-		}
-		else {
-			if (results.size() > 0) {
-				startFrom = cities.indexOf(results.get(0).toUpperCase(DEFAULT_LOCALE));
-				endAt = cities.indexOf(results.get(results.size() - 1).toUpperCase(DEFAULT_LOCALE));
+	     }
+
+		@Override
+		protected String doInBackground(String... params) {
+			String locationText = params[0];
+			
+			if (Geocoder.isPresent()) {
+				// use Android provided API to lookup location
+				getLatLngFromGeocoder(locationText);
 			}
 			else {
-				startFrom = 1;
-				endAt = -1;
+				// Android API not available on this device, make HTTP request
+				// this only runs if device doesn't have Play store, Maps...
+				getLatLngFromHttp(locationText);
+			}
+			
+			return null;
+		}
+		
+		private void getLatLngFromGeocoder(String locationText) {
+
+			final Geocoder geocoder = new Geocoder(SearchActivity.this);
+			try {
+				List<Address> places = geocoder.getFromLocationName(locationText, 1);
+				Address address = null;
+				
+				if (places != null && !places.isEmpty()) {
+					address =  places.get(0);
+				}
+				
+				if (address != null) {
+					if (searchLocation != null) {
+						searchLocation.reset();
+					}
+					else {
+						searchLocation = new Location("custom");
+					}
+					searchLocation.setLatitude(address.getLatitude());
+					searchLocation.setLongitude(address.getLongitude());
+					
+					isBadLocation = false;
+				}
+				else {
+					searchLocation = null;
+					isBadLocation = true;
+				}
+			}
+			catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 		
-		return results;
+		private void getLatLngFromHttp(String locationText) {
+			locationText = locationText.replace(" ", "");
+			String url = "http://maps.google.com/maps/api/geocode/json?address=" + locationText + "&sensor=false";
+		    HttpGet httpGet = new HttpGet(url);
+		    HttpClient client = new DefaultHttpClient();
+		    HttpResponse response;
+		    
+		    try {
+		        response = client.execute(httpGet);
+		        String json = EntityUtils.toString(response.getEntity());
+		        JSONObject jsonObject = new JSONObject(json);
+
+		        if (searchLocation != null) {
+					searchLocation.reset();
+				}
+				else {
+					searchLocation = new Location("custom");
+				}
+	            searchLocation.setLatitude(((JSONArray)jsonObject.get("results")).getJSONObject(0)
+	            		.getJSONObject("geometry").getJSONObject("location").getDouble("lat"));
+	            searchLocation.setLongitude(((JSONArray)jsonObject.get("results")).getJSONObject(0)
+	            		.getJSONObject("geometry").getJSONObject("location").getDouble("lng"));
+	            
+	            isBadLocation = false;
+		    }
+		    catch (ClientProtocolException e) {
+		    	searchLocation = null;
+		    	isBadLocation = true;
+		        e.printStackTrace();
+		    }
+		    catch (IOException e) {
+		    	searchLocation = null;
+		    	isBadLocation = true;
+				e.printStackTrace();
+			}
+		    catch (JSONException e) {
+		    	Log.d(TAG, "error parsing JSON, no geocode results");
+		    	searchLocation = null;
+		    	isBadLocation = true;
+	            e.printStackTrace();
+	        }
+		}
 	}
 
 	private class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
@@ -496,7 +551,58 @@ public class SearchActivity extends SherlockActivity
 		}
 	}
 	
-	// START OF LOCATION CALL BACKS *******************************
+	private ArrayList<String> autocomplete(String typedText) {
+		ArrayList<String> results = new ArrayList<String>();
+		String oldText = typedText.substring(0, typedText.length() - 1);
+		int start = 0;
+		int end = cities.size();
+		
+		if (oldText.equals(lastSearch)) {
+			start = startFrom;
+			end = endAt + 1;
+		}
+		
+		// add current location to list of selections if it's known
+		if (this.currentLocation != null)
+			results.add("Current Location");
+		
+		String city;
+		for (int i = start; i < end; i++) {
+			city = cities.get(i);
+			if (city.toLowerCase(DEFAULT_LOCALE).startsWith(typedText.toLowerCase(DEFAULT_LOCALE))) {
+				String[] splitCity = city.split(",");
+				city = WordUtils.capitalize(splitCity[0].toLowerCase(DEFAULT_LOCALE)) + "," + splitCity[1];
+				results.add(city);
+			}
+		}
+
+		lastSearch = typedText;
+		// setting the indices based on whether current location is included in list
+		if (this.currentLocation != null) {
+			if (results.size() == 1) {
+				startFrom = 1;
+				endAt = -1;
+			}
+			else {
+				startFrom = cities.indexOf(results.get(1).toUpperCase(DEFAULT_LOCALE));
+				endAt = cities.indexOf(results.get(results.size() - 1).toUpperCase(DEFAULT_LOCALE));
+			}
+		}
+		else {
+			if (results.size() > 0) {
+				startFrom = cities.indexOf(results.get(0).toUpperCase(DEFAULT_LOCALE));
+				endAt = cities.indexOf(results.get(results.size() - 1).toUpperCase(DEFAULT_LOCALE));
+			}
+			else {
+				startFrom = 1;
+				endAt = -1;
+			}
+		}
+		
+		return results;
+	}
+	
+	// START OF LOCATION CALL BACKS
 	
 	/*
      * Called by Location Services when the request to connect the
@@ -514,10 +620,11 @@ public class SearchActivity extends SherlockActivity
         
         if (this.currentLocation != null) {
         	Log.d(TAG, "last location: " + currentLocation.toString());
-        	if (addressEditText.getText().toString().isEmpty()) {
-        		addressEditText.requestFocus();
-	        	addressEditText.setText("Current Location");
+        	if (locationEditText.getText().toString().isEmpty()) {
+        		locationEditText.requestFocus();
+	        	locationEditText.setText("Current Location");
 				searchEditText.requestFocus();
+				this.isBadLocation = false;
         	}
         }
         else {
@@ -566,10 +673,11 @@ public class SearchActivity extends SherlockActivity
 				this.currentLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 				
 				if (this.currentLocation != null) {
-					if (addressEditText.getText().toString().isEmpty()) {
-						addressEditText.requestFocus();
-						addressEditText.setText("Current Location");
+					if (locationEditText.getText().toString().isEmpty()) {
+						locationEditText.requestFocus();
+						locationEditText.setText("Current Location");
 						searchEditText.requestFocus();
+						this.isBadLocation = false;
 					}
 				}
 				
@@ -580,10 +688,11 @@ public class SearchActivity extends SherlockActivity
 				this.currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 				
 				if (this.currentLocation != null) {
-					if (addressEditText.getText().toString().isEmpty()) {
-						addressEditText.requestFocus();
-						addressEditText.setText("Current Location");
+					if (locationEditText.getText().toString().isEmpty()) {
+						locationEditText.requestFocus();
+						locationEditText.setText("Current Location");
 						searchEditText.requestFocus();
+						this.isBadLocation = false;
 					}
 				}
 				
@@ -611,7 +720,7 @@ public class SearchActivity extends SherlockActivity
 			this.currentLocation = new Location(location);
 		}
 		
-		if (addressEditText.getText().toString().equals("Current Location")) {
+		if (locationEditText.getText().toString().equals("Current Location")) {
 			this.searchLocation = this.currentLocation;
 		}
 		

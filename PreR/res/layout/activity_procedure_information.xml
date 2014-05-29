@@ -8,97 +8,90 @@
     android:layout_marginLeft="@dimen/activity_horizontal_margin"
     android:layout_marginRight="@dimen/activity_horizontal_margin"
     android:weightSum="100">
-
-    <RelativeLayout
-        android:id="@+id/service_info_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_weight="25" >
-        
-        <TextView 
-            android:id="@+id/service_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_centerVertical="true"
-            android:text="@string/service_label_text"
-            android:textSize="@dimen/procedure_info_text_size"/>
-
-        <TextView
-            android:id="@+id/procedure_info_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/service_label"
-            android:layout_centerVertical="true"
-            android:textSize="@dimen/procedure_info_text_size" />
-
-    </RelativeLayout>
     
-    <RelativeLayout
-        android:id="@+id/price_info_container"
-        android:layout_width="match_parent"
+    <TableLayout
+        android:shrinkColumns="1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_weight="10" >
+        android:layout_marginLeft="10dp"
+        android:layout_weight="70">
         
-        <TextView 
-            android:id="@+id/price_label"
-            android:layout_width="wrap_content"
+        <TableRow
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_centerVertical="true"
-            android:text="@string/price_label_text"
-            android:textSize="@dimen/procedure_info_text_size"/>
-        
-        <TextView
-	        android:id="@+id/procedure_info_price"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="10dp"
-	        android:layout_toRightOf="@id/price_label"
-	        android:layout_alignParentRight="true"
-	        android:layout_centerVertical="true"
-	        android:textSize="@dimen/procedure_info_text_size" />
+            android:layout_marginTop="30dp">
+            
+            <TextView
+	            android:id="@+id/service_label"
+	            android:layout_marginRight="10dp"
+	            android:layout_centerVertical="true"
+	            android:text="@string/service_label_text"
+	            android:textSize="@dimen/procedure_info_text_size"/>
 
-    </RelativeLayout>
-    
-    <RelativeLayout
-        android:id="@+id/hospital_info_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_weight="30" >
+	        <TextView
+	            android:id="@+id/procedure_info_name"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center_vertical"
+	            android:layout_marginLeft="10dp"
+	            android:layout_centerVertical="true"
+	            android:textSize="@dimen/procedure_info_text_size" />
+        </TableRow>
         
-        <TextView 
-            android:id="@+id/hospital_label"
-            android:layout_width="wrap_content"
+        <TableRow
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_centerVertical="true"
-            android:text="@string/hospital_label_text"
-            android:textSize="@dimen/procedure_info_text_size"/>
+            android:layout_marginTop="30dp">
+            
+            <TextView 
+	            android:id="@+id/price_label"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginRight="10dp"
+	            android:layout_centerVertical="true"
+	            android:text="@string/price_label_text"
+	            android:textSize="@dimen/procedure_info_text_size"/>
         
-        <TextView
-	        android:id="@+id/procedure_info_hospital"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="10dp"
-	        android:layout_toRightOf="@id/hospital_label"
-	        android:layout_centerVertical="true"
-	        android:textSize="@dimen/procedure_info_text_size"
-	        android:background="#00000000" />
-
-    </RelativeLayout>
+	        <TextView
+		        android:id="@+id/procedure_info_price"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="10dp"
+		        android:layout_toRightOf="@id/price_label"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+		        android:textSize="@dimen/procedure_info_text_size" />
+        </TableRow>
+        
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
+            
+            <TextView 
+	            android:id="@+id/hospital_label"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginRight="10dp"
+	            android:layout_centerVertical="true"
+	            android:text="@string/hospital_label_text"
+	            android:textSize="@dimen/procedure_info_text_size"/>
+        
+	        <TextView
+		        android:id="@+id/procedure_info_hospital"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="10dp"
+		        android:layout_toRightOf="@id/hospital_label"
+		        android:layout_centerVertical="true"
+		        android:textSize="@dimen/procedure_info_text_size"/>
+        </TableRow>
+        
+    </TableLayout>
     
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="35" >
+        android:layout_weight="30" >
         
         <Button
 	        android:id="@+id/hospital_phone"

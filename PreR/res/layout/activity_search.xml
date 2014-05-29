@@ -27,16 +27,6 @@
 	        android:layout_toRightOf="@+id/location_icon"
 	        android:selectAllOnFocus="true"
 	        android:hint="@string/zipcode_edittext_hint"/>
-
-        <Button
-            android:id="@+id/clear_address_button"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginRight="10dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/abs__ic_clear_holo_light"
-            android:visibility="gone"/>
 	        
     </RelativeLayout>
 
