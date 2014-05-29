@@ -26,6 +26,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.actionbarsherlock.R;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.internal.nineoldandroids.widget.NineFrameLayout;
@@ -50,7 +51,8 @@ public class ActionBarContainer extends NineFrameLayout {
         this(context, null);
     }
 
-    public ActionBarContainer(Context context, AttributeSet attrs) {
+    @SuppressWarnings("deprecation")
+	public ActionBarContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         setBackgroundDrawable(null);

@@ -74,7 +74,8 @@ public class ActionBarContextView extends AbsActionBarView implements AnimatorLi
         this(context, attrs, R.attr.actionModeStyle);
     }
 
-    public ActionBarContextView(Context context, AttributeSet attrs, int defStyle) {
+    @SuppressWarnings("deprecation")
+	public ActionBarContextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SherlockActionMode, defStyle, 0);
@@ -103,7 +104,8 @@ public class ActionBarContextView extends AbsActionBarView implements AnimatorLi
         }
     }
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public void setSplitActionBar(boolean split) {
         if (mSplitActionBar != split) {
             if (mActionMenuPresenter != null) {
@@ -200,7 +202,8 @@ public class ActionBarContextView extends AbsActionBarView implements AnimatorLi
         }
     }
 
-    public void initForMode(final ActionMode mode) {
+    @SuppressWarnings("deprecation")
+	public void initForMode(final ActionMode mode) {
         if (mClose == null) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             mClose = (NineLinearLayout)inflater.inflate(R.layout.abs__action_mode_close_item, this, false);
