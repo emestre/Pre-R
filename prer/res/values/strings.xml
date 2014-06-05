@@ -1,51 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">PreR</string>
+    <!-- miscellaneous strings -->
+    <string name="app_name">Pre-R</string>
     <string name="action_settings">Settings</string>
-    <string name="home_search_button_text">Search for a Service</string>
-    <string name="home_camera_button_text">Upload a Bill</string>
-    <string name="help_button_description">Help button to provide tips for taking a picture of a bill.</string>
-    <string name="title_capture_bill">Capture Bill</string>
-    <string name="review_bill_image">View to display bill image.</string>
-    <string name="title_review_bill">Review</string>
+    <string name="splash_logo_description">The Pre-R brand logo with application icon and slogan.</string>
+
+    <!-- home screen activity strings -->
+    <string name="home_search_button_text">Search for Services</string>
+    <string name="home_camera_button_text">Upload Bills</string>
+    <string name="about_us_text">About Us</string>
+    <string name="privacy_policy_text">Privacy Policy</string>
+    <string name="faq_text">FAQ</string>
+
+    <!-- search and results activity strings -->
     <string name="search_edittext_hint">Service Name/CPT Code</string>
     <string name="title_activity_search">Search Services</string>
     <string name="zipcode_edittext_hint">City or Zip Code</string>
-    <string name="search_button_text">Go</string>
     <string name="incorrect_zip">Please enter a valid zip code.</string>
     <string name="no_results">No results found.</string>
-    <string name="capture_button_text">Capture</string>
-    <string name="splash_logo_description">The PreR brand logo with application icon and slogan.</string>
     <string name="title_activity_procedure_results_list">Results</string>
     <string name="sort_price">Sort by price</string>
     <string name="sort_distance">Sort by distance</string>
     <string name="title_activity_procedure_information">Service Information</string>
-    <string name="hospital_info">\n123 Fake St.\nSan Luis Obispo</string>
-    <string name="upload_text">Upload</string>
-    <string name="retake_text">Retake</string>
-    <string name="upload_success_message">Your bill has been successfully uploaded.</string>
-    <string name="thank_you_message">Thank you for making health care healthier!</string>
-    <string name="gohome_button">Home</string>
-    <string name="upload_another_button">Upload Another Page</string>
-    <string name="title_uploaded_bill">Upload Status</string>
-    <string name="capture_button_description">Button for taking a picture.</string>
-    <string name="submenu_upload_text">Upload to PreR</string>
-    <string name="title_activity_first_use">FirstUseActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="welcome">Welcome to PreR!\nThank you for helping make health care healthier!</string>
-    <string name="search_tut">PreR offers features to search and add medical prices around you.\nHere\'s how you would search for prices:\n\nFirst, select "Search for a Procedure"</string>
-    <string name="search_tut2">Next, enter your location in the address text field. If you are using location services, you can leave that field blank to use your default location.\nThen, enter a query in the procedure search field. Results should automatically be populated in a dynamic list you can choose from.</string>
-   	<string name="search_tut3">After selecting a procedure from the search result, you can view its information:</string>
-    <string name="start_searching">Start searching procedures now!</string>
-    <string name="intro_btn_text">Next</string>
-    <string name="intro_final_btn_text">Let\'s get started!</string>
-    <string name="help_checkbox_text">Don\'t show this on camera start</string>
     <string name="button_call_text">Call Hospital</string>
     <string name="button_directions_text">Get Directions</string>
     <string name="button_website_text">Go to Website</string>
     <string name="service_label_text">Service:</string>
     <string name="price_label_text">Price:</string>
     <string name="hospital_label_text">Hospital:</string>
+    <string name="gohome_button">Home</string>
+
+    <!-- camera and review bill activity strings -->
+    <string name="title_capture_bill">Capture Bill</string>
+    <string name="capture_button_text">Capture</string>
+    <string name="review_bill_image">View to display bill image.</string>
+    <string name="upload_another_button">Upload Another Page</string>
+    <string name="title_uploaded_bill">Upload Status</string>
+    <string name="capture_button_description">Button for taking a picture.</string>
+    <string name="submenu_upload_text">Upload to Pre-R</string>
+    <string name="help_button_description">Help button to provide tips for taking a picture of a bill.</string>
+    <string name="upload_success_message">Your bill has been successfully uploaded.</string>
+    <string name="thank_you_message">Thank you for making health care healthier!</string>
+    <string name="title_review_bill">Review</string>
+    <string name="upload_text">Upload</string>
+    <string name="retake_text">Retake</string>
+    <string name="help_checkbox_text">Don\'t show this on camera start.</string>
+
+    <!-- tutorial strings -->
+    <string name="title_activity_first_use">FirstUseActivity</string>
+    <string name="welcome">Welcome to Pre-R!\n\nThank you for joining us in our cause!</string>
+    <string name="search_tut">We offer features to search and add medical prices across the country.\n\nTo start searching, select the Search for a Procedure button.</string>
+    <string name="search_tut2">We will find your current location if you let us, otherwise you can type in any city or zip code to search around.\n\nTyping a service name will auto-populate a list of services we currently have datapoints for, select your service from this list to search.</string>
+    <string name="search_tut3">Selecting an item from the results list allows you to view the hospital provider\'s information:</string>
+    <string name="start_searching">Start searching and uploading fees now!</string>
+    <string name="intro_btn_text">Next</string>
+    <string name="intro_final_btn_text">Let\'s get started!</string>
+
+    <!-- about us activity strings -->
+    <string name="title_activity_about_us">About Us</string>
+    <string name="about_us_description">We’re here to make healthcare healthier by facilitating cooperation and price transparency! Our app enables users to search medical fees and to share their medical bills.\n\nTo search: Select a service and location. Then compare fees and make more informed decisions.\n\nTo share: Just snap a picture of your bill. We do the rest!\n\nOur goal is to employ crowdsourcing to search and share billing information in order to help lower the costs of healthcare. Our main interest is system improvement. This is an AD-FREE app.\n\nTo all patients, please help us bring transparency to a remarkably confusing, complex and expensive system. Help us to help you!\n\nAnd for healthcare practitioners interested in sharing your services and your low prices, please help us to help your patients by emailing your prices and contact information to info@pre-r.com.\n\nJoin us!</string>
+    
+    <!-- FAQ activity strings -->
+    <string name="title_activity_faq">Frequently Asked Questions</string>
+    
+    <!-- privacy policy activity strings -->
+    <string name="title_activity_privacy_policy">Privacy Policy</string>
 
 </resources>

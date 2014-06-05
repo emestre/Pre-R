@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 public class HomeScreenActivity extends SherlockActivity {
 	
@@ -25,7 +27,6 @@ public class HomeScreenActivity extends SherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homescreen);
     }
-
     
     /** Start the search activity. */
     public void startSearch(View view) {
@@ -54,4 +55,36 @@ public class HomeScreenActivity extends SherlockActivity {
         else
             return false;	// no camera on this device
     }
+    
+    @Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// inflate the menu, this adds items to the action bar if it is present.
+		this.getSupportMenuInflater().inflate(R.menu.homescreen, menu);
+		return true;
+	}
+    
+    @Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+    	Intent intent;
+    	
+		switch (item.getItemId()) {
+			
+			case R.id.action_about:
+				intent = new Intent(this, AboutUsActivity.class);
+				startActivity(intent);
+				return true;
+				
+			case R.id.action_privacy:
+				intent = new Intent(this, PrivacyPolicyActivity.class);
+				startActivity(intent);
+				return true;
+				
+			case R.id.action_faq:
+				intent = new Intent(this, FAQActivity.class);
+				startActivity(intent);
+				return true;
+		}
+		
+		return super.onOptionsItemSelected(item);
+	}
 }

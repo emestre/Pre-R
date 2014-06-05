@@ -1,0 +1,72 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_text_margin"
+    tools:context="${packageName}.${activityClass}" >
+
+	<ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            
+	        <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textSize="@dimen/default_text_size"
+		        android:text="We deeply value your privacy. We will not do anything with your information that you do not explicitly request. Also, no login is required to search or share info.\n\nImages that you upload are stored temporarily on our servers. They are used to populate our database with services info only. We do NOT store any personal identifiers in our database, and we encourage all users to conceal such identifiers before uploading bills." />
+            
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="@dimen/title_top_margin"
+	            android:textStyle="bold"
+	            android:textSize="@dimen/title_text_size"
+	            android:text="Who is my information shared with?"/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="@dimen/body_top_margin"
+	            android:textSize="15sp"
+	            android:text="Pre-R is an ad-free app. We do not sell, trade, or lend your information to third parties. Our main interest is improving the medical care system."/>
+	       		
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="@dimen/title_top_margin"
+	            android:textStyle="bold"
+	            android:textSize="@dimen/title_text_size"
+	            android:text="How will I know when this privacy policy is updated?"/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="@dimen/body_top_margin"
+	            android:textSize="15sp"
+	            android:text="Any changes or updates to our privacy policy are reflected here."/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="@dimen/title_top_margin"
+	            android:textStyle="bold"
+	            android:textSize="@dimen/title_text_size"
+	            android:text="Whom do I contact about this Privacy Policy?"/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="@dimen/body_top_margin"
+	            android:textSize="15sp"
+	            android:text="If you have any questions or concern, please contact us at info@pre-r.com. "/>
+	        
+        </LinearLayout>
+        
+    </ScrollView>
+
+</RelativeLayout>

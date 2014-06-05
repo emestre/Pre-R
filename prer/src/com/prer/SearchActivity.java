@@ -19,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -35,6 +36,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -118,14 +120,11 @@ public class SearchActivity extends SherlockActivity
 
 		filteredResults = new ArrayList<String>();
 		resultsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, filteredResults);
+		results_listView.setAdapter(resultsAdapter);
 
 		initListeners();
 		getCities();
 
-		AutoCompleteTextView autoCompView = (AutoCompleteTextView) findViewById(R.id.zip_code_edittext);
-		autoCompView.setAdapter(new PlacesAutoCompleteAdapter(this, R.layout.list_item));
-
-		results_listView.setAdapter(resultsAdapter);
 		toast = new Toast(context);
 	}
 	
@@ -134,8 +133,9 @@ public class SearchActivity extends SherlockActivity
 
 		results_listView = (ListView) findViewById(R.id.results_list);
 		searchEditText = (EditText) findViewById(R.id.search_edittext);
-		locationEditText = (AutoCompleteTextView) findViewById(R.id.zip_code_edittext);
+		locationEditText = (AutoCompleteTextView) findViewById(R.id.location_edittext);
 		locationEditText.setThreshold(1);
+		locationEditText.setAdapter(new PlacesAutoCompleteAdapter(this, R.layout.list_item));
 		noResultsView = (TextView) findViewById(R.id.no_results_view);
 	}
 
@@ -146,6 +146,10 @@ public class SearchActivity extends SherlockActivity
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				if (isBadLocation) {
+					// hide the virtual keyboard
+					InputMethodManager inputMethodManager = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
+				    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+					
 					showToast("Please enter a valid location to search from.");
 					locationEditText.requestFocus();
 					filteredResults.clear();
@@ -170,7 +174,7 @@ public class SearchActivity extends SherlockActivity
 					String locationText = locationEditText.getText().toString();
 										
 					if (!isOnline()) {
-						showToast("A network connection needed to search.");
+						showToast("A network connection is needed to search.");
 						return;
 					}
 					
@@ -249,7 +253,7 @@ public class SearchActivity extends SherlockActivity
 		}
 		
 		if (!isOnline()) {
-			showToast("A network connection needed to search.");
+			showToast("A network connection is needed to search.");
 			return;
 		}
 		
@@ -444,6 +448,7 @@ public class SearchActivity extends SherlockActivity
 				}
 			}
 			catch (IOException e) {
+				getLatLngFromHttp(locationText);
 				e.printStackTrace();
 			}
 		}
@@ -466,6 +471,7 @@ public class SearchActivity extends SherlockActivity
 				else {
 					searchLocation = new Location("custom");
 				}
+		        // parsing the JSON string for the latitude and longitude
 	            searchLocation.setLatitude(((JSONArray)jsonObject.get("results")).getJSONObject(0)
 	            		.getJSONObject("geometry").getJSONObject("location").getDouble("lat"));
 	            searchLocation.setLongitude(((JSONArray)jsonObject.get("results")).getJSONObject(0)
@@ -621,10 +627,8 @@ public class SearchActivity extends SherlockActivity
         if (this.currentLocation != null) {
         	Log.d(TAG, "last location: " + currentLocation.toString());
         	if (locationEditText.getText().toString().isEmpty()) {
-        		locationEditText.requestFocus();
 	        	locationEditText.setText("Current Location");
-				searchEditText.requestFocus();
-				this.isBadLocation = false;
+	        	this.setLocation("Current Location");
         	}
         }
         else {
@@ -674,10 +678,8 @@ public class SearchActivity extends SherlockActivity
 				
 				if (this.currentLocation != null) {
 					if (locationEditText.getText().toString().isEmpty()) {
-						locationEditText.requestFocus();
 						locationEditText.setText("Current Location");
-						searchEditText.requestFocus();
-						this.isBadLocation = false;
+			        	this.setLocation("Current Location");
 					}
 				}
 				
@@ -689,10 +691,8 @@ public class SearchActivity extends SherlockActivity
 				
 				if (this.currentLocation != null) {
 					if (locationEditText.getText().toString().isEmpty()) {
-						locationEditText.requestFocus();
 						locationEditText.setText("Current Location");
-						searchEditText.requestFocus();
-						this.isBadLocation = false;
+			        	this.setLocation("Current Location");
 					}
 				}
 				
@@ -702,7 +702,8 @@ public class SearchActivity extends SherlockActivity
 			else {
 				// location services are disabled
 				// obtaining user location is not possible if we get here
-				this.showToast("Enabling your device's location services allows you to search from your current location.");
+				this.currentLocation = null;
+				this.showToast("Location services are not enabled on your device.");
 			}
 		}
 		catch (Exception e) {

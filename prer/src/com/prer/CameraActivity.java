@@ -112,7 +112,7 @@ public class CameraActivity extends Activity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Picture Tips");
         builder.setMessage("Touch to focus.\nPlace the bill on a dark, flat surface for best results.\n\n" +
-        				   "PreR will not store or use any personal information visible on your bill, " +
+        				   "We will not store or use any personal information visible on your bill, " +
         				   "but please cover any sensitive information you wish not to be seen.");
         builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
         	public void onClick(DialogInterface dialog,int id) {
@@ -195,11 +195,12 @@ public class CameraActivity extends Activity {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
         	
+        	Log.d(TAG, "picture storage size in bytes: " + data.length);
+        	
         	// get the time stamp for the image name
         	String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         	// get the path to our app's internal storage directory and append image name
-        	String path = getApplicationContext().getCacheDir().getPath() + 
-        				  File.separator + "IMG_" + timeStamp + ".jpg";
+        	String path = getApplicationContext().getCacheDir().getPath() + File.separator + "IMG_" + timeStamp + ".jpg";
         	
         	// save the image to the app's internal storage directory
         	try {

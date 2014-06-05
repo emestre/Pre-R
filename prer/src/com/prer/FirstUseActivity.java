@@ -52,15 +52,15 @@ public class FirstUseActivity extends FragmentActivity {
 				break;
 				
 			case 1:
-				frag = IntroFragment.create(R.drawable.search_btn_screenshot, R.string.search_tut, position);
+				frag = IntroFragment.create(R.drawable.screenshot_search_button, R.string.search_tut, position);
 				break;
 				
 			case 2:
-				frag = IntroFragment.create(R.drawable.search_fields_screenshot, R.string.search_tut2, position);
+				frag = IntroFragment.create(R.drawable.screenshot_search, R.string.search_tut2, position);
 				break;
 				
 			case 3:
-				frag = IntroFragment.create(R.drawable.search_result_screenshot, R.string.search_tut3, position);
+				frag = IntroFragment.create(R.drawable.screenshot_hospital, R.string.search_tut3, position);
 				break;
 				
 			case 4:

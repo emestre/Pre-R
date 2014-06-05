@@ -12,11 +12,13 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-	
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
@@ -24,63 +26,72 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Sherlock.Light" >
-        
-        <meta-data android:name="com.google.android.gms.version"
-           android:value="@integer/google_play_services_version" />
-        
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity
             android:name="com.prer.SplashScreenActivity"
+            android:theme="@style/Theme.Sherlock.NoActionBar">
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name="com.prer.HomeScreenActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
-        
         <activity
             android:name="com.prer.CameraActivity"
             android:label="@string/title_capture_bill"
             android:screenOrientation="portrait" >
         </activity>
-        
         <activity
             android:name="com.prer.ReviewBillActivity"
             android:label="@string/title_review_bill"
             android:screenOrientation="portrait" >
         </activity>
-        
         <activity
             android:name="com.prer.UploadedBillActivity"
             android:label="@string/title_uploaded_bill"
             android:screenOrientation="portrait" >
         </activity>
-        
         <activity
             android:name="com.prer.SearchActivity"
             android:label="@string/title_activity_search"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateUnchanged" >
         </activity>
-        
         <activity
             android:name="com.prer.ProcedureResultsListActivity"
             android:label="@string/title_activity_procedure_results_list" >
         </activity>
-        
         <activity
             android:name="com.prer.ProcedureInformationActivity"
             android:label="@string/title_activity_procedure_information"
             android:screenOrientation="portrait" >
         </activity>
-
         <activity
             android:name="com.prer.FirstUseActivity"
             android:label="@string/title_activity_first_use" >
+        </activity>
+        <activity
+            android:name="com.prer.AboutUsActivity"
+            android:label="@string/title_activity_about_us"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.prer.FAQActivity"
+            android:label="@string/title_activity_faq"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.prer.PrivacyPolicyActivity"
+            android:label="@string/title_activity_privacy_policy" >
         </activity>
     </application>
 

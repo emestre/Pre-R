@@ -11,11 +11,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.media.ExifInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -62,11 +64,24 @@ public class ReviewBillActivity extends SherlockActivity {
 	}
 	
 	private void displayImage() {
+		Display display = getWindowManager().getDefaultDisplay();
+		Point screenSize = new Point();
+		display.getSize(screenSize);
+		Log.d(TAG, "screen size: " + screenSize.x + " x " + screenSize.y);
     	
     	// retrieve the file path from the intent
     	mPathToImage = (String) getIntent().getExtras().get(CameraActivity.KEY_IMAGE_PATH);
     	// create a bitmap image from the file path
-    	Bitmap billImage = BitmapFactory.decodeFile(mPathToImage);
+//    	Bitmap billImage = BitmapFactory.decodeFile(mPathToImage);
+    	
+    	 final BitmapFactory.Options options = new BitmapFactory.Options();
+    	 options.inJustDecodeBounds = true;
+    	 BitmapFactory.decodeFile(mPathToImage, options);
+    	 Log.d(TAG, "picture dimensions: " + options.outWidth + " x " + options.outHeight);
+    	 
+    	 options.inSampleSize = calculateInSampleSize(options, screenSize.x, screenSize.y);
+    	 options.inJustDecodeBounds = false;
+    	 Bitmap billImage = BitmapFactory.decodeFile(mPathToImage, options);
     	
     	// try to read the EXIF tags of the JPG image
     	ExifInterface exif = null;
@@ -104,7 +119,6 @@ public class ReviewBillActivity extends SherlockActivity {
     	    	billImage = Bitmap.createBitmap(billImage, 0, 0, billImage.getWidth(), 
     	    						billImage.getHeight(), rotateMatrix, false);
     		}
-    		billImage = billImage.copy(Bitmap.Config.ARGB_8888, true);
     	}
     	
         // set ImageView to display the bill image
@@ -115,6 +129,28 @@ public class ReviewBillActivity extends SherlockActivity {
         // run OCR on bitmap
 //        new RunTesseractOCR(this.getApplicationContext()).execute(billImage);
     }
+	
+	private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+	    // Raw height and width of image
+	    final int height = options.outHeight;
+	    final int width = options.outWidth;
+	    int inSampleSize = 1;
+	
+	    if (height > reqHeight || width > reqWidth) {
+	
+	        final int halfHeight = height / 2;
+	        final int halfWidth = width / 2;
+	
+	        // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+	        // height and width larger than the requested height and width.
+	        while ((halfHeight / inSampleSize) > reqHeight
+	                && (halfWidth / inSampleSize) > reqWidth) {
+	            inSampleSize *= 2;
+	        }
+	    }
+	
+	    return inSampleSize;
+	}
     
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -187,19 +223,19 @@ public class ReviewBillActivity extends SherlockActivity {
 				
 				// check if the upload succeeded or not
 				switch (Integer.parseInt(result)) {
-				case UPLOAD_SUCCESS:
-					Log.d(TAG, "uploading the image SUCCEEDED");
+					case UPLOAD_SUCCESS:
+						Log.d(TAG, "uploading image SUCCEEDED");
+						
+						// building the upload succeed alert window
+						mUploadStatusAlert = buildSuccessDialog();
+						break;
 					
-					// building the upload succeed alert window
-					mUploadStatusAlert = buildSuccessDialog();
-					break;
-				
-				default:
-					Log.d(TAG, "uploading the image FAILED");
-					
-			        // building the upload failed alert window
-					mUploadStatusAlert = buildFailedDialog();
-					break;
+					default:
+						Log.d(TAG, "uploading image FAILED");
+						
+				        // building the upload failed alert window
+						mUploadStatusAlert = buildFailedDialog();
+						break;
 				}
 				
 				// show the upload status alert dialog
@@ -211,7 +247,7 @@ public class ReviewBillActivity extends SherlockActivity {
     	mUploadingProgress = new ProgressDialog(this);
     	mUploadingProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     	mUploadingProgress.setTitle("Uploading...");
-    	mUploadingProgress.setMessage("Your bill is being uploaded to PreR.");
+    	mUploadingProgress.setMessage("Your bill is being uploaded to Pre-R.");
     	mUploadingProgress.setIndeterminate(true);
     	mUploadingProgress.setCancelable(true);
     	mUploadingProgress.show();

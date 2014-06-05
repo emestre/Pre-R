@@ -8,29 +8,6 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp">
-
-        <ImageView
-            android:id="@+id/location_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_action_location_dark"/>
-        
-	    <AutoCompleteTextView
-	        android:id="@+id/zip_code_edittext"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_centerVertical="true"
-	        android:layout_toRightOf="@+id/location_icon"
-	        android:selectAllOnFocus="true"
-	        android:hint="@string/zipcode_edittext_hint"/>
-	        
-    </RelativeLayout>
-
-    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp">
@@ -48,8 +25,34 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/search_icon"
+            android:inputType="textNoSuggestions"
             android:hint="@string/search_edittext_hint"/>
         
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <ImageView
+            android:id="@+id/location_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_action_location_dark"/>
+        
+	    <AutoCompleteTextView
+	        android:id="@+id/location_edittext"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_toRightOf="@+id/location_icon"
+	        android:inputType="textNoSuggestions"
+	        android:selectAllOnFocus="true"
+	        android:imeOptions="actionPrevious"
+	        android:hint="@string/zipcode_edittext_hint"/>
+	        
     </RelativeLayout>
 
     <TextView

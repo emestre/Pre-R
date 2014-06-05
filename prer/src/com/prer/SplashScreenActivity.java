@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
-import android.view.Window;
-import android.view.WindowManager;
 
 public class SplashScreenActivity extends Activity {
 	
@@ -20,11 +17,6 @@ public class SplashScreenActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        // go full screen, hide the status and action bars before setContentView()
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
-        						WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        
         setContentView(R.layout.activity_splashscreen);
 
         // New Handler to start the HomeScreenActivity 
@@ -32,10 +24,9 @@ public class SplashScreenActivity extends Activity {
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
-                // go to tutorial or home screen based on if this is first run of app
+                // go to tutorial or home screen based on if this is first run
             	SharedPreferences firstRunPreference = 
-	    				getSharedPreferences(SplashScreenActivity.FIRST_RUN_PREF_NAME, 
-	    				FragmentActivity.MODE_PRIVATE);
+	    				getSharedPreferences(SplashScreenActivity.FIRST_RUN_PREF_NAME, Activity.MODE_PRIVATE);
             	
             	Intent intent;
             	if (firstRunPreference.getBoolean(IS_FIRST_RUN, true)) {

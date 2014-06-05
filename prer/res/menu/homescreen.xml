@@ -1,9 +1,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:id="@+id/action_about"
+        android:orderInCategory="25"
         android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:title="@string/about_us_text"/>
+    
+    <item
+        android:id="@+id/action_privacy"
+        android:orderInCategory="50"
+        android:showAsAction="never"
+        android:title="@string/privacy_policy_text"/>
+    
+    <item
+        android:id="@+id/action_faq"
+        android:orderInCategory="75"
+        android:showAsAction="never"
+        android:title="@string/faq_text"/>
 
 </menu>

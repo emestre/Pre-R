@@ -1,6 +1,7 @@
 package com.prer;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -8,7 +9,6 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,7 +45,7 @@ public class IntroFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		View view = inflater.inflate(R.layout.intro_fragment, container, false);
+		View view = inflater.inflate(R.layout.fragment_intro, container, false);
 		introCaption = (TextView) view.findViewById(R.id.intro_caption);
 		introImage = (ImageView) view.findViewById(R.id.intro_image);
 		nextBtn = (Button) view.findViewById(R.id.intro_button);
@@ -59,8 +59,7 @@ public class IntroFragment extends Fragment {
 		    		
 					// tutorial is finished, save boolean in shared preferences
 		    		SharedPreferences firstRunPreference = 
-		    				getActivity().getSharedPreferences(SplashScreenActivity.FIRST_RUN_PREF_NAME, 
-		    				FragmentActivity.MODE_PRIVATE);
+		    				getActivity().getSharedPreferences(SplashScreenActivity.FIRST_RUN_PREF_NAME, Activity.MODE_PRIVATE);
 		    		Editor editor = firstRunPreference.edit();
 		    		editor.putBoolean(SplashScreenActivity.IS_FIRST_RUN, false);
 		    		editor.commit();

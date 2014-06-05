@@ -12,7 +12,5 @@
         android:title="@string/upload_text"
         android:showAsAction="always|withText">
     </item>
-    
-    
 
 </menu>

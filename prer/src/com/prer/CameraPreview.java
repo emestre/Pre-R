@@ -107,7 +107,7 @@ public class CameraPreview extends ViewGroup implements SurfaceHolder.Callback {
     	mCamParams.setPictureSize(mPictureSize.width, mPictureSize.height);
         Log.d(TAG, "picture size set to: " + mPictureSize.width + " x " + mPictureSize.height);
         
-        mCamParams.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+//        mCamParams.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         // update the camera object parameters
         mCamera.setParameters(mCamParams);
 
@@ -135,7 +135,7 @@ public class CameraPreview extends ViewGroup implements SurfaceHolder.Callback {
     
     private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h, int type) {
         final double ASPECT_TOLERANCE = 0.1;
-        double targetRatio=(double)h / w;
+        double targetRatio = (double) h / w;
 
         if (sizes == null) 
         	return null;
