@@ -189,7 +189,8 @@ public class IcsProgressBar extends View {
     private static final int ANIMATION_RESOLUTION = 200;
     private static final int TIMEOUT_SEND_ACCESSIBILITY_EVENT = 200;
 
-    private static final int[] ProgressBar = new int[] {
+    @SuppressWarnings({ "deprecation" })
+	private static final int[] ProgressBar = new int[] {
         android.R.attr.maxWidth,
         android.R.attr.maxHeight,
         android.R.attr.max,

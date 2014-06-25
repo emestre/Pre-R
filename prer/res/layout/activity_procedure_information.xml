@@ -1,0 +1,131 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:weightSum="100">
+    
+    <TableLayout
+        android:shrinkColumns="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="70">
+        
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
+            
+            <TextView
+	            android:id="@+id/service_label"
+	            android:layout_marginRight="10dp"
+	            android:layout_centerVertical="true"
+	            android:text="@string/service_label_text"
+	            android:textSize="@dimen/procedure_info_text_size"/>
+
+	        <TextView
+	            android:id="@+id/procedure_info_name"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center_vertical"
+	            android:layout_marginLeft="10dp"
+	            android:layout_centerVertical="true"
+	            android:textSize="@dimen/procedure_info_text_size" />
+        </TableRow>
+        
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
+            
+            <TextView 
+	            android:id="@+id/price_label"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginRight="10dp"
+	            android:layout_centerVertical="true"
+	            android:text="@string/price_label_text"
+	            android:textSize="@dimen/procedure_info_text_size"/>
+        
+	        <TextView
+		        android:id="@+id/procedure_info_price"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="10dp"
+		        android:layout_toRightOf="@id/price_label"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+		        android:textSize="@dimen/procedure_info_text_size" />
+        </TableRow>
+        
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
+            
+            <TextView 
+	            android:id="@+id/hospital_label"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginRight="10dp"
+	            android:layout_centerVertical="true"
+	            android:text="@string/hospital_label_text"
+	            android:textSize="@dimen/procedure_info_text_size"/>
+        
+	        <TextView
+		        android:id="@+id/procedure_info_hospital"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="10dp"
+		        android:layout_toRightOf="@id/hospital_label"
+		        android:layout_centerVertical="true"
+		        android:textSize="@dimen/procedure_info_text_size"/>
+        </TableRow>
+        
+    </TableLayout>
+    
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="30" >
+        
+        <Button
+	        android:id="@+id/hospital_phone"
+	        android:layout_width="225dp"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="5dp"
+	        android:drawableLeft="@drawable/ic_action_call_light"
+	        android:background="@drawable/btn_default_bg"
+	        android:text="@string/button_call_text"
+	        android:textColor="@color/white"
+	        android:textSize="@dimen/procedure_info_text_size" />
+
+	    <Button
+	        android:id="@+id/hospital_directions"
+	        android:layout_width="225dp"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="5dp"
+	        android:drawableLeft="@drawable/ic_action_directions_light"
+	        android:background="@drawable/btn_default_bg"
+	        android:text="@string/button_directions_text"
+	        android:textColor="@color/white"
+	        android:textSize="@dimen/procedure_info_text_size" />
+	
+	    <Button
+	        android:id="@+id/hospital_website"
+	        android:layout_width="225dp"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="5dp"
+	        android:drawableLeft="@drawable/ic_action_web_site"
+	        android:background="@drawable/btn_default_bg"
+	        android:text="@string/button_website_text"
+	        android:textColor="@color/white"
+	        android:textSize="@dimen/procedure_info_text_size" />
+        
+    </LinearLayout>
+    
+</LinearLayout>

@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item 
+        android:id="@+id/procedure_information_home_button" 
+        android:title="@string/gohome_button"
+        android:visible="true" 
+        android:showAsAction="never">
+    </item>
+
+</menu>

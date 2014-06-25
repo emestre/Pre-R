@@ -1,0 +1,217 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="12dp"
+    tools:context="${packageName}.${activityClass}" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            	
+           <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textSize="20sp"
+		        android:textStyle="bold"
+		        android:text="How to search?"/>
+        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="7dp"
+	            android:textSize="15sp"
+	            android:text="&#8226; Enter your city or zip code."/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="7dp"
+	            android:textSize="15sp"
+	            android:text="&#8226; Start typing a service name and we'll populate a list of available services."/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="7dp"
+	            android:textSize="15sp"
+	            android:text="&#8226; Start shopping!"/>
+	        
+	        <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="20dp"
+		        android:textSize="20sp"
+		        android:textStyle="bold"
+		        android:text="How to share?"/>
+        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="7dp"
+	            android:textSize="15sp"
+	            android:text="&#8226; Get your medical bills."/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="7dp"
+	            android:textSize="15sp"
+	            android:text="&#8226; Cross out any personal information. We only care about the fees."/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="7dp"
+	            android:textSize="15sp"
+	            android:text="&#8226; Take a picture that includes: service names and/or CPT codes, fees, hospital provider and date of service)"/>
+         	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="7dp"
+	            android:textSize="15sp"
+	            android:text="&#8226; Hit upload. We do the rest!"/>
+	        
+	        <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="20dp"
+		        android:textSize="20sp"
+		        android:textStyle="bold"
+		        android:text="How does cost “searchability” benefit me?"/>
+        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="7dp"
+	            android:textSize="15sp"
+	            android:textStyle="italic"
+	            android:text="Uninsured Patients:"/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="2dp"
+	            android:textSize="15sp"
+	            android:text="&#8226; You have the greatest risk, but also the most power to negotiate when you know the going rates."/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="7dp"
+	            android:textSize="15sp"
+	            android:textStyle="italic"
+	            android:text="Insured Patients:"/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="2dp"
+	            android:textSize="15sp"
+	            android:text="&#8226; Perhaps you have full coverage. But if not, it still pays to research fees to limit your out-of-pocket expenses. Choosing providers with lower fees or encouraging your insurers to contract with them can limit your expenses as well."/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="7dp"
+	            android:textSize="15sp"
+	            android:textStyle="italic"
+	            android:text="Physicians:"/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="2dp"
+	            android:textSize="15sp"
+	            android:text="&#8226; Knowing costs for healthcare enables you to make informed referrals, and helps you to keep your patients healthy! To keep a patient healthy, it is important to consider their mental, physical, as well a fiscal well-being."/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="7dp"
+	            android:textSize="15sp"
+	            android:textStyle="italic"
+	            android:text="Healthcare Administrators:"/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="2dp"
+	            android:textSize="15sp"
+	            android:text="&#8226; Researching fees can help you to know where your fees sit on the spectrum."/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="7dp"
+	            android:textSize="15sp"
+	            android:textStyle="italic"
+	            android:text="Insurers:"/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="2dp"
+	            android:textSize="15sp"
+	            android:text="&#8226; Certainly you should find value in fee control and consistency!"/>
+	        
+	        <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="20dp"
+		        android:textSize="20sp"
+		        android:textStyle="bold"
+		        android:text="What's a CPT code?"/>
+        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="7dp"
+	            android:textSize="15sp"
+	            android:text="&#8226; CPT stands for Current Procedural Terminology. It was developed by the American Medical Association. A CPT code is used by providers to indicate the specific service that was rendered. It is also used by insurers to determine coverage. CPT codes are five-digit numbers often listed on the detailed medical bills."/>
+	        
+	        <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="20dp"
+		        android:textSize="20sp"
+		        android:textStyle="bold"
+		        android:text="What if my medical bill does not have CPT codes?"/>
+        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginTop="7dp"
+	            android:textSize="15sp"
+	            android:text="&#8226; If CPT codes or itemized services are not included on your medical bills, you may contact your provider to obtain this information."/>
+	     	
+        </LinearLayout>
+        
+    </ScrollView>
+
+</RelativeLayout>

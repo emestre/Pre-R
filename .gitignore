@@ -13,6 +13,8 @@ PreR/bin/
 PreR/gen/
 actionbarsherlock/bin/
 actionbarsherlock/gen/
+google-play-services_lib/bin/
+google-play-services_lib/gen/
 
 # Ignore gradle files
 .gradle/

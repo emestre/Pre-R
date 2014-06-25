@@ -32,6 +32,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
 import com.actionbarsherlock.R;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.internal.nineoldandroids.animation.Animator;
@@ -271,7 +272,8 @@ public class ScrollingTabContainerView extends NineHorizontalScrollView
         }
     }
 
-    private TabView createTabView(ActionBar.Tab tab, boolean forAdapter) {
+    @SuppressWarnings("deprecation")
+	private TabView createTabView(ActionBar.Tab tab, boolean forAdapter) {
         //Workaround for not being able to pass a defStyle on pre-3.0
         final TabView tabView = (TabView)mInflater.inflate(R.layout.abs__action_bar_tab, null);
         tabView.init(this, tab, forAdapter);

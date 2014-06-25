@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".HomeScreenActivity" >
+
+    <Button
+        android:id="@+id/home_search_button"
+        android:layout_width="300dp"
+        android:layout_height="75dp"
+        android:drawableLeft="@drawable/ic_action_search_light"
+        android:text="@string/home_search_button_text"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:onClick="startSearch"
+        android:background="@drawable/btn_default_bg"/>
+    
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:text="Compare fees to minimize your bills"/>
+
+	<Button
+        android:id="@+id/home_camera_button"
+        android:layout_width="300dp"
+        android:layout_height="75dp"
+        android:drawableLeft="@drawable/ic_action_camera_light"
+        android:text="@string/home_camera_button_text" 
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:onClick="startCamera"
+        android:background="@drawable/btn_default_bg" />
+	
+	<TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share your fees to help inform others"/>
+
+</LinearLayout>
